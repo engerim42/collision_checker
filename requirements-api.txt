@@ -1,0 +1,11 @@
+# Web API dependencies
+# Install: pip install -r requirements-api.txt
+#
+# Run (from collision_checker/ directory):
+#   uvicorn api:app --host 127.0.0.1 --port 8000 --workers 1
+#
+# IMPORTANT: --workers 1 is required. The job store is in process-memory;
+# multiple workers would not share the same _jobs dict.
+
+fastapi>=0.111
+uvicorn[standard]>=0.29

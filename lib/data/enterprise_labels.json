@@ -1,0 +1,79 @@
+{
+  "_meta": {
+    "source": "NCAP Study Two (Apr 2024) Appendix 2; SAC045; SAC068; DITL/ITHI."
+  },
+  "strings": {
+    "intranet": {
+      "score": 72,
+      "reason": "Widely deployed intranet portal label."
+    },
+    "corporate": {
+      "score": 70,
+      "reason": "Forest root in large multi-national AD deployments."
+    },
+    "office": {
+      "score": 65,
+      "reason": "Microsoft 365/Exchange co-existence label."
+    },
+    "lan": {
+      "score": 68,
+      "reason": "ISP-provisioned CPE default; residential leakage."
+    },
+    "ad": {
+      "score": 72,
+      "reason": "Active Directory shorthand; high DITL query volume."
+    },
+    "dc": {
+      "score": 60,
+      "reason": "Domain Controller auto-discovery leakage."
+    },
+    "domain": {
+      "score": 65,
+      "reason": "Legacy NT domain label in root queries."
+    },
+    "server": {
+      "score": 60,
+      "reason": "Generic server label; high SMB leakage."
+    },
+    "exchange": {
+      "score": 70,
+      "reason": "Microsoft Exchange Autodiscover leakage."
+    },
+    "sharepoint": {
+      "score": 65,
+      "reason": "SharePoint site collections leakage."
+    },
+    "vpn": {
+      "score": 62,
+      "reason": "Split-DNS VPN configurations frequently mislabel."
+    },
+    "mgmt": {
+      "score": 58,
+      "reason": "Management network label in enterprise networks."
+    },
+    "prod": {
+      "score": 55,
+      "reason": "Production environment DNS zone label."
+    },
+    "staging": {
+      "score": 50,
+      "reason": "Staging environment; misconfigured resolver leakage."
+    },
+    "dev": {
+      "score": 50,
+      "reason": "Development environment \u2014 widely used as private TLD."
+    },
+    "infra": {
+      "score": 55,
+      "reason": "Infrastructure zone; common in DevOps environments."
+    },
+    "private": {
+      "score": 60,
+      "reason": "Explicitly private namespace \u2014 high collision risk."
+    },
+    "intra": {
+      "score": 65,
+      "reason": "Short-form intranet; documented in NCAP leakage data."
+    }
+  }
+}

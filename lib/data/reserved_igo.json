@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "source": "ICANN Guidebook 2026 \u00a77.2.2; IGO-INGO Policy (Feb 2024); IOC/ICRC"
+  },
+  "categories": {
+    "igo_abbreviations": {
+      "desc": "IGO abbreviations \u2014 Reserved for designated IGO only",
+      "source": "ICANN IGO-INGO Protections Policy (Feb 2024)",
+      "strings": [
+        "un",
+        "who",
+        "nato",
+        "wto",
+        "imf",
+        "ioc",
+        "icrc",
+        "osce",
+        "oecd",
+        "iaea",
+        "interpol",
+        "unesco",
+        "unicef",
+        "wipo",
+        "fao",
+        "ifad",
+        "ilo",
+        "itu",
+        "wmo",
+        "icao",
+        "ifc",
+        "ebrd",
+        "adb",
+        "afdb",
+        "opcw",
+        "ctbto",
+        "unido",
+        "unwto",
+        "unhcr",
+        "undp",
+        "unep",
+        "unfccc"
+      ]
+    },
+    "olympic_terms": {
+      "desc": "IOC-protected Olympic terms \u2014 Reserved for IOC only",
+      "source": "ICANN-IOC Agreement; GNSO SubPro Final Report \u00a72.1.7",
+      "strings": [
+        "olympic",
+        "olympics",
+        "olympiad",
+        "olympique",
+        "paralympic",
+        "paralympics"
+      ]
+    },
+    "red_cross_terms": {
+      "desc": "Red Cross / Red Crescent \u2014 Reserved for ICRC/IFRC only",
+      "source": "Geneva Conventions; ICANN Board ICRC/IFRC protections",
+      "strings": [
+        "redcross",
+        "redcrescent",
+        "redcrystal",
+        "cruzroja",
+        "croixrouge"
+      ]
+    }
+  }
+}

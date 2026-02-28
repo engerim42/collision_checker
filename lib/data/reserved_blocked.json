@@ -1,0 +1,58 @@
+{
+  "_meta": {
+    "source": "ICANN Guidebook 2026 \u00a77.2.1 Table 7-1; SAC113; RFC 6761/2606/7686"
+  },
+  "categories": {
+    "icann_iana_ietf_infrastructure": {
+      "desc": "ICANN/IANA/IETF Bodies & Internet Infrastructure \u2014 \u00a77.2.1 Table 7-1",
+      "source": "ICANN New gTLD Guidebook 2026 \u00a77.2.1 Table 7-1",
+      "strings": [
+        "afrinic",
+        "gnso",
+        "internic",
+        "nro",
+        "tld",
+        "alac",
+        "gtldservers",
+        "internal",
+        "pti",
+        "whois",
+        "apnic",
+        "iab",
+        "ietf",
+        "rfceditor",
+        "www",
+        "arin",
+        "iana",
+        "irtf",
+        "ripe",
+        "aso",
+        "ianaservers",
+        "istf",
+        "rootservers",
+        "ccnso",
+        "icann",
+        "lacnic",
+        "rssac",
+        "gac",
+        "iesg",
+        "nic",
+        "ssac"
+      ]
+    },
+    "protocol_reserved": {
+      "desc": "IETF Protocol-Reserved Names",
+      "source": "RFC 2606; RFC 6761; RFC 7686",
+      "strings": [
+        "example",
+        "test",
+        "invalid",
+        "localhost",
+        "local",
+        "onion",
+        "localdomain",
+        "alt"
+      ]
+    }
+  }
+}

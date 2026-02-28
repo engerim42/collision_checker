@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gTLD Application Risk Checker</title>
+  <style>
+    /* ── Reset + base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      background: #f7f8fa;
+      color: #1a202c;
+      min-height: 100vh;
+    }
+
+    /* ── Page layout ──────────────────────────────────────────────────── */
+    .sc-page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 16px 80px;
+    }
+
+    /* ── Header ───────────────────────────────────────────────────────── */
+    .sc-header { margin-bottom: 28px; }
+    .sc-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a202c;
+      letter-spacing: -0.01em;
+    }
+    .sc-header .sc-subtitle {
+      color: #718096;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* ── Search card ──────────────────────────────────────────────────── */
+    .sc-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    .sc-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #4a5568;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
+    }
+    .sc-textarea {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace;
+      font-size: 13px;
+      color: #1a202c;
+      background: #fdfdfe;
+      resize: vertical;
+      min-height: 88px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .sc-textarea:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+    }
+    .sc-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .sc-hint { color: #a0aec0; font-size: 11px; }
+    .sc-btn {
+      background: #1a202c;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sc-btn:hover:not(:disabled) { background: #2d3748; }
+    .sc-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── Status bar ───────────────────────────────────────────────────── */
+    .sc-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .sc-status.hidden { display: none; }
+    .sc-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #e2e8f0;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: sc-spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes sc-spin { to { transform: rotate(360deg); } }
+    .sc-status-text { color: #4a5568; font-size: 12px; flex: 1; }
+    .sc-job-chip {
+      font-family: ui-monospace, monospace;
+      font-size: 10px;
+      color: #718096;
+      background: #f7f8fa;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 2px 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 260px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .sc-job-chip:hover { background: #edf2f7; color: #4a5568; }
+    .sc-job-chip.hidden { display: none; }
+
+    /* ── Error banner ─────────────────────────────────────────────────── */
+    .sc-error {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      color: #c53030;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .sc-error.hidden { display: none; }
+
+    /* ── Report iframe ────────────────────────────────────────────────── */
+    .sc-report-frame {
+      width: 100%;
+      border: none;
+      display: block;
+      /* height is set dynamically by JS after srcdoc loads */
+    }
+  </style>
+</head>
+<body>
+
+<div class="sc-page">
+
+  <header class="sc-header">
+    <h1>gTLD Application Risk Checker</h1>
+    <p class="sc-subtitle">
+      ICANN New gTLD Programme 2026 &nbsp;·&nbsp;
+      Name Collision &amp; Eligibility Assessment
+    </p>
+  </header>
+
+  <div class="sc-card">
+    <label class="sc-label" for="sc-input">TLD string(s) to assess</label>
+    <textarea
+      id="sc-input"
+      class="sc-textarea"
+      rows="4"
+      placeholder="corp&#10;home&#10;mail&#10;&#10;One per line, or comma-separated — no leading dot needed"
+      autofocus
+    ></textarea>
+    <div class="sc-card-footer">
+      <span class="sc-hint">
+        One per line or comma-separated &nbsp;·&nbsp; max 20 strings
+        &nbsp;·&nbsp; <kbd>Ctrl+Enter</kbd> to submit
+      </span>
+      <button id="sc-submit" class="sc-btn" onclick="scSubmit()">Assess ›</button>
+    </div>
+  </div>
+
+  <div id="sc-status" class="sc-status hidden">
+    <div class="sc-spinner"></div>
+    <span id="sc-status-text" class="sc-status-text">Submitting…</span>
+    <span
+      id="sc-job-chip"
+      class="sc-job-chip hidden"
+      title="Click to copy job ID"
+      onclick="scCopyJobId()"
+    ></span>
+  </div>
+
+  <div id="sc-error" class="sc-error hidden"></div>
+
+  <div id="sc-report"></div>
+
+</div>
+
+<script>
+  // ── Configuration ─────────────────────────────────────────────────────────
+  //
+  // SC_API_BASE: leave empty ('') to use the same origin as this page (the
+  // normal case when served behind Apache with ProxyPass /api/ → uvicorn).
+  //
+  // Set to 'http://localhost:8000' when opening this file directly from the
+  // filesystem during development (file:// has no origin to share with the API).
+  //
+  const SC_API_BASE   = '';
+  const SC_POLL_MS    = 1500;   // poll interval in milliseconds
+  const SC_TIMEOUT_S  = 90;     // give up polling after this many seconds
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  let scPollTimer    = null;
+  let scCurrentJobId = null;
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function scParseStrings(raw) {
+    return raw
+      .replace(/,/g, '\n')
+      .split('\n')
+      .map(s => s.trim().replace(/^\.+/, ''))   // strip leading dots
+      .filter(Boolean)
+      .filter((v, i, a) => a.indexOf(v) === i)  // deduplicate
+      .slice(0, 20);
+  }
+
+  function scShowError(msg) {
+    const el = document.getElementById('sc-error');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+  }
+
+  function scHideError() {
+    document.getElementById('sc-error').classList.add('hidden');
+  }
+
+  function scSetStatus(text) {
+    document.getElementById('sc-status-text').textContent = text;
+  }
+
+  function scCopyJobId() {
+    if (scCurrentJobId && navigator.clipboard) {
+      navigator.clipboard.writeText(scCurrentJobId).catch(() => {});
+    }
+  }
+
+  // ── Submit ────────────────────────────────────────────────────────────────
+  async function scSubmit() {
+    // Cancel any in-flight poll
+    if (scPollTimer) { clearInterval(scPollTimer); scPollTimer = null; }
+    scHideError();
+    document.getElementById('sc-report').innerHTML = '';
+
+    const raw     = document.getElementById('sc-input').value;
+    const strings = scParseStrings(raw);
+
+    if (!strings.length) {
+      scShowError('Please enter at least one TLD string.');
+      return;
+    }
+
+    const btn      = document.getElementById('sc-submit');
+    const statusEl = document.getElementById('sc-status');
+    const chipEl   = document.getElementById('sc-job-chip');
+
+    btn.disabled = true;
+    statusEl.classList.remove('hidden');
+    chipEl.classList.add('hidden');
+    scSetStatus('Submitting…');
+
+    // ── POST /api/assess ───────────────────────────────────────────────────
+    let jobId;
+    try {
+      const resp = await fetch(`${SC_API_BASE}/api/assess`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ strings }),
+      });
+      if (!resp.ok) {
+        const detail = await resp.json()
+          .then(d => d.detail || resp.statusText)
+          .catch(() => resp.statusText);
+        throw new Error(detail);
+      }
+      const data = await resp.json();
+      jobId = data.job_id;
+    } catch (e) {
+      btn.disabled = false;
+      statusEl.classList.add('hidden');
+      scShowError(`Submission failed: ${e.message}`);
+      return;
+    }
+
+    scCurrentJobId      = jobId;
+    chipEl.textContent  = `Job: ${jobId}`;
+    chipEl.classList.remove('hidden');
+    scSetStatus(
+      `Assessing ${strings.length} string${strings.length > 1 ? 's' : ''}…`
+    );
+
+    // ── Poll GET /api/jobs/{job_id} ────────────────────────────────────────
+    let elapsed = 0;
+    scPollTimer = setInterval(async () => {
+      elapsed += SC_POLL_MS / 1000;
+
+      if (elapsed > SC_TIMEOUT_S) {
+        clearInterval(scPollTimer); scPollTimer = null;
+        btn.disabled = false;
+        statusEl.classList.add('hidden');
+        scShowError(
+          `Timed out after ${SC_TIMEOUT_S} s. ` +
+          `The server may still be processing — job ID: ${jobId}`
+        );
+        return;
+      }
+
+      let job;
+      try {
+        const resp = await fetch(`${SC_API_BASE}/api/jobs/${jobId}`);
+        if (!resp.ok) return;   // transient — keep polling
+        job = await resp.json();
+      } catch (_) {
+        return;                 // network hiccup — keep polling
+      }
+
+      if (job.status === 'complete') {
+        clearInterval(scPollTimer); scPollTimer = null;
+        btn.disabled = false;
+        statusEl.classList.add('hidden');
+        scRenderReport(job.html);
+
+      } else if (job.status === 'error') {
+        clearInterval(scPollTimer); scPollTimer = null;
+        btn.disabled = false;
+        statusEl.classList.add('hidden');
+        scShowError(`Assessment error: ${job.error}`);
+      }
+      // status === 'pending' → keep polling
+    }, SC_POLL_MS);
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  function scRenderReport(html) {
+    const container = document.getElementById('sc-report');
+    container.innerHTML = '';
+
+    // srcdoc iframe sandboxes the report's own CSS from this page.
+    // contentDocument access works because srcdoc is same-origin.
+    const iframe = document.createElement('iframe');
+    iframe.className = 'sc-report-frame';
+    iframe.style.height = '200px';       // grow after load
+    iframe.setAttribute('title', 'Risk Assessment Report');
+    iframe.setAttribute('srcdoc', html);
+
+    iframe.addEventListener('load', function () {
+      try {
+        const h = this.contentDocument.documentElement.scrollHeight;
+        this.style.height = (h + 16) + 'px';
+      } catch (_) {
+        this.style.height = '1200px';   // fallback if cross-origin restriction
+      }
+    });
+
+    container.appendChild(iframe);
+    // Scroll to report
+    setTimeout(() => iframe.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+
+  // ── Keyboard shortcut: Ctrl+Enter / Cmd+Enter submits ─────────────────────
+  document.getElementById('sc-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      scSubmit();
+    }
+  });
+</script>
+
+</body>
+</html>

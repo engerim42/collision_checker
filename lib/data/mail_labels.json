@@ -1,0 +1,55 @@
+{
+  "_meta": {
+    "source": "NCAP Study Two (Apr 2024) \u00a75; Autodiscover RFC; RFC 6186; DITL."
+  },
+  "strings": {
+    "mail": {
+      "score": 100,
+      "reason": "Confirmed high-risk 2012. Highest mail-leakage volume."
+    },
+    "email": {
+      "score": 82,
+      "reason": "High Thunderbird autoconfig volume."
+    },
+    "smtp": {
+      "score": 80,
+      "reason": "SMTP relay label; MUA leakage."
+    },
+    "imap": {
+      "score": 78,
+      "reason": "IMAP label; RFC 6186 SRV leakage."
+    },
+    "pop": {
+      "score": 75,
+      "reason": "POP3 label; legacy mail client leakage."
+    },
+    "webmail": {
+      "score": 78,
+      "reason": "Webmail portal; high DITL query count."
+    },
+    "autodiscover": {
+      "score": 88,
+      "reason": "Outlook autodiscovery; massive leakage."
+    },
+    "autoconfig": {
+      "score": 85,
+      "reason": "Thunderbird autoconfig; documented NCAP Study 2."
+    },
+    "relay": {
+      "score": 65,
+      "reason": "Mail relay hostname label."
+    },
+    "mailhost": {
+      "score": 72,
+      "reason": "Generic mail server; observed in DITL."
+    },
+    "ews": {
+      "score": 68,
+      "reason": "Exchange Web Services endpoint label."
+    },
+    "owa": {
+      "score": 65,
+      "reason": "Outlook Web Access; leaks from Outlook clients."
+    }
+  }
+}

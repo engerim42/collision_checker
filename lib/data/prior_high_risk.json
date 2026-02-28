@@ -1,0 +1,19 @@
+{
+  "_meta": {
+    "source": "ICANN New gTLD Guidebook 2026 \u00a77.7.1; 2012 round outcome"
+  },
+  "strings": {
+    "corp": {
+      "score": 100,
+      "reason": "Ubiquitous Active Directory forest root label."
+    },
+    "home": {
+      "score": 100,
+      "reason": "Default home-network label; massive leakage."
+    },
+    "mail": {
+      "score": 100,
+      "reason": "Mail-infrastructure; auto-discovery leakage."
+    }
+  }
+}

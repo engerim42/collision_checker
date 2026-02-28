@@ -1,0 +1,55 @@
+{
+  "_meta": {
+    "source": "NCAP Study Two (Apr 2024) \u00a74; RFC 8375; DITL 2023 root-server logs."
+  },
+  "strings": {
+    "home": {
+      "score": 100,
+      "reason": "Confirmed high-risk 2012. RFC 8375 \u2192 .home.arpa."
+    },
+    "router": {
+      "score": 72,
+      "reason": "Common router hostname; leaks from misconfigured hosts."
+    },
+    "gateway": {
+      "score": 68,
+      "reason": "ISP CPE default; observed in DITL leakage."
+    },
+    "modem": {
+      "score": 65,
+      "reason": "Cable/DSL modem admin hostname label."
+    },
+    "nas": {
+      "score": 62,
+      "reason": "NAS device local DNS label (Synology, QNAP)."
+    },
+    "printer": {
+      "score": 58,
+      "reason": "Network printer mDNS leakage documented."
+    },
+    "wifi": {
+      "score": 60,
+      "reason": "Wireless AP admin portal label."
+    },
+    "wlan": {
+      "score": 58,
+      "reason": "WLAN controller; enterprise and home leakage."
+    },
+    "guest": {
+      "score": 55,
+      "reason": "Guest-network SSID/DNS label on consumer routers."
+    },
+    "iot": {
+      "score": 60,
+      "reason": "IoT device naming; high volume in ITHI data."
+    },
+    "hub": {
+      "score": 55,
+      "reason": "Smart home hub label (SmartThings, Hubitat)."
+    },
+    "mesh": {
+      "score": 52,
+      "reason": "Mesh Wi-Fi DNS label (Eero, Orbi)."
+    }
+  }
+}
