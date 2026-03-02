@@ -337,6 +337,9 @@ def _result_html(r: dict) -> str:
 
     return f"""
   <div class="result">
+    <div class="result-title">
+      <span class="tld">.{_e(s.upper())}</span><span class="sep">|</span><span class="rpt-label">Application Risk Report</span>
+    </div>
     <div class="section-title">Name Collision Risk</div>
     <div class="score-row">
       <span class="score-label">Score</span>
