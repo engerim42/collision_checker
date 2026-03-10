@@ -105,6 +105,14 @@ class RiskAssessor:
                 f"'{s}' matches city '{city_label}'. §7.5.3: Geographic Names Review will "
                 f"apply. Applicant must provide documented support from the relevant "
                 f"government(s) or demonstrate legitimate community sponsorship.")
+        sacred_desc = db.get_sacred_site(s)
+        if sacred_desc:
+            geo_flag = True
+            geo_notes.append(
+                f"'{s}' is a recognised sacred/pilgrimage site: {sacred_desc}. "
+                f"§7.5.3 Geographic Names Review applies. A §4.5.1.2 Community Objection "
+                f"from the relevant religious community is almost certain; documented "
+                f"community support and non-objection evidence required.")
         if db.is_un_region(s):   # catches sub-regions (macro already blocked above)
             geo_flag = True
             geo_notes.append(
@@ -425,7 +433,51 @@ class RiskAssessor:
                     "https://newgtlds.icann.org/en/"
                 )))
 
-        # Factor 13 — No signals
+        # Factor 13 — Geographic name similarity (fuzzy city match, B1)
+        # Only fires when the string is NOT an exact city match (geo_flag already set).
+        if not elig.geo_flag:
+            geo_sim = db.find_similar_cities(s, max_dist=1)
+            if geo_sim:
+                sim_desc = "; ".join(
+                    f"'{r['variant']}' → {r['city']} (edit-dist {r['distance']})"
+                    for r in geo_sim[:3])
+                add(RiskFactor(
+                    "Geographic Name Similarity — Near-Miss City Match",
+                    score=28,
+                    description=(
+                        f"'{s}' is within 1 edit of a recognised geographic city name: "
+                        f"{sim_desc}. Near-miss geographic strings carry §7.5.3 review "
+                        f"risk and may attract a §4.5.1.2 Community Objection from the "
+                        f"affected city's government or local community."),
+                    recommendation=(
+                        "Verify against ICANN's TAMS geographic name index. "
+                        "Obtain non-objection documentation from the relevant "
+                        "government(s) if intending to proceed."),
+                    source="GeoNames city data; ICANN Guidebook §7.5.3 / §4.5.1.2"))
+
+        # Factor 14 — Sacred / pilgrimage site match (D2)
+        # Scored separately from geo_flag because religious community objection
+        # standing (§4.5.1.2) is independent of the §7.5.3 geographic review.
+        if elig.geo_flag and db.is_sacred_site(s):
+            sacred_desc = db.get_sacred_site(s)
+            add(RiskFactor(
+                "Sacred / Pilgrimage Site — §4.5.1.2 Community Objection Risk",
+                score=35,
+                description=(
+                    f"'{s}' is a globally recognised sacred or pilgrimage site: "
+                    f"{sacred_desc}. The associated religious community has standing "
+                    f"to file a §4.5.1.2 Community Objection. Historical precedent: "
+                    f"multiple community objections against culturally sensitive strings "
+                    f"were upheld in the 2012 round."),
+                recommendation=(
+                    "Obtain explicit non-objection letters from recognised representative "
+                    "bodies of the affected religious community before filing. "
+                    "Budget for Community Objection proceedings (DRSP fees) if the "
+                    "community has not endorsed the application."),
+                source="UNWTO Sacred Sites Programme; ICANN §4.5.1.2 / §7.5.3; "
+                       "ICC Expert Determinations 2013"))
+
+        # Factor 15 — No signals
         if not factors:
             add(RiskFactor("No Known High-Risk Signals Detected", score=5,
                 description=(f"'{s}' does not match any high-risk pattern across IANA TLD list, "

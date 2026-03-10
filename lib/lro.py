@@ -60,6 +60,7 @@ _BRANDS: dict[str, dict] = {
     # ── Internet / Media ───────────────────────────────────────────────────
     "youtube":    {"tier": 1, "sector": "Internet/Media","holder": "Alphabet Inc.",            "score": 70, "source": "Interbrand 2024"},
     "instagram":  {"tier": 1, "sector": "Internet/Media","holder": "Meta Platforms Inc.",      "score": 68, "source": "Interbrand 2024"},
+    "whatsapp":   {"tier": 1, "sector": "Internet/Media","holder": "Meta Platforms Inc.",      "score": 68, "source": "Brand Finance Global 500 2024; WIPO §6bis"},
     "netflix":    {"tier": 1, "sector": "Internet/Media","holder": "Netflix Inc.",             "score": 65, "source": "Interbrand 2024"},
     "twitter":    {"tier": 1, "sector": "Internet/Media","holder": "X Corp.",                  "score": 65, "source": "Interbrand 2024; ICANN 2012 LRO precedent"},
     "linkedin":   {"tier": 2, "sector": "Internet/Media","holder": "Microsoft Corporation",    "score": 58, "source": "Interbrand 2024"},
@@ -69,6 +70,22 @@ _BRANDS: dict[str, dict] = {
     "ebay":       {"tier": 2, "sector": "Internet/Media","holder": "eBay Inc.",                "score": 55, "source": "Interbrand 2024"},
     "uber":       {"tier": 2, "sector": "Internet/Media","holder": "Uber Technologies Inc.",   "score": 55, "source": "Brand Finance Global 500 2024"},
     "airbnb":     {"tier": 2, "sector": "Internet/Media","holder": "Airbnb Inc.",              "score": 52, "source": "Brand Finance Global 500 2024"},
+
+    # ── Product / platform names (C3) — registered trademarks independent of ──
+    # ── parent company name; high LRO risk even if company already listed    ──
+    "android":    {"tier": 1, "sector": "Technology",    "holder": "Google LLC (Alphabet Inc.)","score": 70, "source": "USPTO Reg. 3669447; WIPO §6bis; Brand Finance 2024"},
+    "windows":    {"tier": 1, "sector": "Technology",    "holder": "Microsoft Corporation",    "score": 70, "source": "USPTO Reg. 1256083; WIPO §6bis; Interbrand 2024"},
+    "iphone":     {"tier": 1, "sector": "Technology",    "holder": "Apple Inc.",               "score": 70, "source": "USPTO Reg. 3568439; WIPO §6bis; Interbrand 2024"},
+    "ipad":       {"tier": 1, "sector": "Technology",    "holder": "Apple Inc.",               "score": 65, "source": "USPTO Reg. 4044424; WIPO §6bis"},
+    "playstation":{"tier": 1, "sector": "Technology",    "holder": "Sony Interactive Entertainment LLC","score": 68,"source": "USPTO Reg. 1922061; WIPO §6bis; Brand Finance 2024"},
+    "xbox":       {"tier": 1, "sector": "Technology",    "holder": "Microsoft Corporation",    "score": 65, "source": "USPTO Reg. 2646571; WIPO §6bis"},
+    "gmail":      {"tier": 1, "sector": "Technology",    "holder": "Google LLC (Alphabet Inc.)","score": 65, "source": "USPTO Reg. 3141577; Brand Finance 2024"},
+    "chatgpt":    {"tier": 1, "sector": "Technology",    "holder": "OpenAI OpCo LLC",          "score": 65, "source": "USPTO App. 98058545; widely known mark 2023–"},
+    "openai":     {"tier": 1, "sector": "Technology",    "holder": "OpenAI OpCo LLC",          "score": 65, "source": "USPTO Reg. 6985726; rapidly accruing §6bis status"},
+    "snapchat":   {"tier": 2, "sector": "Internet/Media","holder": "Snap Inc.",                "score": 58, "source": "USPTO Reg. 4375712; Brand Finance Global 500 2024"},
+    "pinterest":  {"tier": 2, "sector": "Internet/Media","holder": "Pinterest Inc.",           "score": 55, "source": "USPTO Reg. 4145017; Brand Finance Global 500 2024"},
+    "wechat":     {"tier": 2, "sector": "Internet/Media","holder": "Tencent Holdings Ltd.",    "score": 58, "source": "Brand Finance Global 500 2024"},
+    "telegram":   {"tier": 2, "sector": "Internet/Media","holder": "Telegram Messenger Inc.",  "score": 52, "source": "USPTO Reg. 5261517; widely-known platform mark"},
 
     # ── Automotive ─────────────────────────────────────────────────────────
     "toyota":     {"tier": 1, "sector": "Automotive",    "holder": "Toyota Motor Corporation", "score": 75, "source": "Interbrand #6 2024; WIPO §6bis"},
