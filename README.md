@@ -1,5 +1,5 @@
 # gTLD Application Risk Checker
-> **Current Version: 1.0.0**
+> **Current Version: 1.1.0**
 
 Assesses proposed new gTLD strings against ICANN eligibility rules and name
 collision risk factors, based on the 2026 Applicant Guidebook and the NCAP
@@ -66,6 +66,20 @@ Inside the interactive prompt:
 - UN M.49 sub-regional names (Caribbean, Melanesia, Micronesia, Polynesia,
   Australasia) → advisory flag
 - ~160 world capital cities → advisory flag with §7.5.3 guidance
+- Near-miss city spelling (edit-distance ≤ 1) → scored risk factor (§7.5.3 /
+  §4.5.1.2); catches strings like `brlin` → Berlin, `sydny` → Sydney
+
+**Sacred / pilgrimage sites (§4.5.1.2 / §7.5.3)**
+- 19 globally recognised sacred sites (Mecca, Medina, Jerusalem, Varanasi,
+  Lumbini, Vatican, Lourdes, Amritsar, etc.) → geo flag + scored risk factor (35 pts)
+- Community Objection from the relevant religious community is near-certain
+
+**Legal Rights Objections — LRO (§4.5.1.3)**
+- 180+ globally recognised brands (Interbrand / Brand Finance / WIPO §6bis)
+- Exact match or edit-distance ≤ 1 against Tier-1 brands
+- Product and platform names checked independently of parent company: Android,
+  Windows, iPhone, iPad, PlayStation, Xbox, Gmail, ChatGPT, WhatsApp, Snapchat,
+  Pinterest, WeChat, Telegram
 
 ## File layout
 
@@ -84,7 +98,7 @@ lib/
   html_report.py          Self-contained HTML report generator
   singular_plural.py      Singular/plural pair detection (§4.4.3)
   semantic.py             Semantic/translation similarity (30+ languages)
-  geo_data.py             Bundled UN macro/sub-region lists; loads world-cities.json
+  geo_data.py             Bundled UN macro/sub-region lists; sacred sites; loads world-cities.json
   world-cities.json       Bundled city dataset — all cities > 15 000 population (geonames.org)
 tests/                    Unit tests (no network required)
 data/                     Local JSON reference files (auto-created on first run)
@@ -117,3 +131,4 @@ The following files ship with the tool and are never fetched remotely:
 | `lib/data/mail_labels.json` | Mail-infrastructure leakage labels | NCAP Study Two |
 | `lib/data/reserved_blocked.json` | §7.2.1 Blocked Names | ICANN Guidebook 2026 |
 | `lib/data/reserved_igo.json` | §7.2.2 Reserved Names (IGO/INGO/IOC/RCRC) | ICANN Guidebook 2026 |
+| `lib/geo_data.py` (inline) | 19 sacred/pilgrimage sites (Islam, Hinduism, Buddhism, Christianity, Sikhism) | UNWTO; ICOMOS; ICANN 2012 community objection precedents |
