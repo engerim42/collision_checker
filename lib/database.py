@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .colors import DIM, YELLOW
 from .fetcher import ResourceFetcher
-from .geo_data import UN_MACRO_REGIONS, UN_REGIONS, load_world_cities
+from .geo_data import UN_MACRO_REGIONS, UN_REGIONS, SACRED_SITES, load_world_cities
 from .seed import _SEED
 
 
@@ -46,6 +46,7 @@ class CollisionDatabase:
         self.iso_codes, self.iso_names = self.fetcher.get_iso3166_data()
         self.un_regions    = UN_REGIONS
         self.un_macro      = UN_MACRO_REGIONS
+        self.sacred_sites  = SACRED_SITES
         _cities_json = Path(__file__).parent / "world-cities.json"
         self.cities = load_world_cities(_cities_json)
 
@@ -60,8 +61,34 @@ class CollisionDatabase:
     def is_iso_name(self, s):    return s in self.iso_names
     def is_un_region(self, s):   return s in self.un_regions
     def is_un_macro(self, s):    return s in self.un_macro
-    def is_city(self, s):        return s in self.cities
-    def get_city(self, s):       return self.cities.get(s)   # returns "City, Country" or None
+    def is_city(self, s):           return s in self.cities
+    def get_city(self, s):          return self.cities.get(s)    # returns "City, Country" or None
+    def is_sacred_site(self, s):    return s in self.sacred_sites
+    def get_sacred_site(self, s):   return self.sacred_sites.get(s)  # returns description or None
+
+    def find_similar_cities(self, s: str, max_dist: int = 1) -> list[dict]:
+        """
+        Return cities whose normalised lookup variant is within *max_dist*
+        Levenshtein edits of *s* (exact matches excluded — those are handled by
+        is_city/get_city).  Results are deduplicated by canonical city label and
+        sorted by ascending edit distance.
+        """
+        from .visual import VisualSimilarityChecker as _V
+        lev  = _V.levenshtein
+        slen = len(s)
+        seen_labels: set[str] = set()
+        results: list[dict]   = []
+        for variant, label in self.cities.items():
+            if variant == s or label in seen_labels:
+                continue
+            if abs(slen - len(variant)) > max_dist:
+                continue
+            dist = lev(s, variant)
+            if dist <= max_dist:
+                seen_labels.add(label)
+                results.append({"city": label, "variant": variant, "distance": dist})
+        results.sort(key=lambda x: x["distance"])
+        return results[:5]
 
     def get_curated_entry(self, s):
         for cat, store in (("Prior High-Risk (2012 Round)", self.prior_high_risk),

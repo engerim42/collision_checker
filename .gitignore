@@ -1,0 +1,6 @@
+# Runtime cache (fetched remote data — regenerated automatically)
+.cache/
+
+# Python bytecode
+__pycache__/
+*.py[cod]

@@ -35,6 +35,41 @@ import re
 import unicodedata
 from pathlib import Path
 
+# ── Religious / sacred sites — §4.5.1.2 Community Objection risk ─────────────
+# These sites carry community objection standing from their respective religious
+# communities.  They are not automatically blocked, but §7.5.3 Geographic Names
+# Review applies and a §4.5.1.2 Community Objection is almost certain.
+# Sources: UNWTO Sacred Sites Programme; ICOMOS; WIPO Traditional Knowledge DB;
+#          ICANN 2012-round community objection precedents.
+SACRED_SITES: dict[str, str] = {
+    # Islam
+    "mecca":        "Mecca (Makkah al-Mukarramah), Saudi Arabia — holiest city in Islam",
+    "makkah":       "Makkah al-Mukarramah, Saudi Arabia — holiest city in Islam",
+    "medina":       "Medina (Al-Madinah al-Munawwarah), Saudi Arabia — second holiest city in Islam",
+    "kaaba":        "Kaaba, Mecca — most sacred structure in Islam",
+    # Judaism / Christianity / Islam
+    "jerusalem":    "Jerusalem — holy city for Judaism, Christianity, and Islam (§7.5.1 / §7.5.3)",
+    # Hinduism
+    "varanasi":     "Varanasi (Benares/Kashi), India — holiest city in Hinduism",
+    "vrindavan":    "Vrindavan, India — sacred Hindu site associated with Krishna",
+    "tirupati":     "Tirupati, India — most visited Hindu pilgrimage site",
+    "haridwar":     "Haridwar, India — major Hindu pilgrimage city on the Ganges",
+    "ayodhya":      "Ayodhya, India — sacred Hindu city, traditional birthplace of Rama",
+    # Buddhism
+    "lumbini":      "Lumbini, Nepal — birthplace of Gautama Buddha (UNESCO World Heritage)",
+    "bodhgaya":     "Bodh Gaya, India — site of the Buddha's enlightenment (UNESCO)",
+    # Christianity
+    "vatican":      "Vatican City — seat of the Roman Catholic Church; also a state name",
+    "lourdes":      "Lourdes, France — major Catholic Marian pilgrimage site",
+    "fatima":       "Fátima, Portugal — major Catholic pilgrimage site",
+    "assisi":       "Assisi, Italy — birthplace of St Francis; major Catholic pilgrimage city",
+    "medjugorje":   "Medjugorje, Bosnia-Herzegovina — major Catholic pilgrimage site",
+    # Sikhism
+    "amritsar":     "Amritsar, India — location of the Golden Temple (Harmandir Sahib), holiest Sikh site",
+    # Mormonism
+    "nauvoo":       "Nauvoo, Illinois, USA — historic Latter-day Saints pilgrimage site",
+}
+
 # ── UN M.49 Macro-geographic regions — §7.5.2 hard-stop ─────────────────────
 UN_MACRO_REGIONS: frozenset[str] = frozenset({
     "africa",
