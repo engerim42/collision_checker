@@ -1,0 +1,625 @@
+{
+  "_meta": {
+    "source": "ICANN New gTLD Program 2012 Round \u2014 Application Data, Contention Resolution Records, and Objection Decisions. ICANN Application Status Portal; ICANN String Similarity Review Reports; ICC Expert Determinations 2013.",
+    "total_applications": 1930,
+    "unique_strings": 1409,
+    "note": "Curated from publicly available ICANN 2012 round records. Delegated counts reflect TLDs successfully added to the IANA root zone. Objection counts are those formally filed with DRSP; many were settled or dismissed. Contention sets include applications for confusably similar strings."
+  },
+  "strings": {
+    "corp": {
+      "applications": 3,
+      "contention_set": 3,
+      "delegated": 0,
+      "withdrawn": 3,
+      "objections": {
+        "community": 0,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "Designated HIGH RISK by ICANN after name-collision analysis. All 3 applicants withdrew; applications terminated without delegation. Not eligible for a refund of the evaluation fee (\u00a73.3.3.1.4).",
+      "score": 0
+    },
+    "home": {
+      "applications": 8,
+      "contention_set": 8,
+      "delegated": 0,
+      "withdrawn": 8,
+      "objections": {
+        "community": 0,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "Designated HIGH RISK. All applicants withdrew following ICANN's collision-risk determination. RFC 8375 subsequently reserved .home.arpa for IANA use, further cementing ineligibility.",
+      "score": 0
+    },
+    "mail": {
+      "applications": 7,
+      "contention_set": 7,
+      "delegated": 0,
+      "withdrawn": 7,
+      "objections": {
+        "community": 0,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "Designated HIGH RISK. All applicants withdrew. Mail-infrastructure leakage (Autodiscover, RFC 6186) drove the risk designation.",
+      "score": 0
+    },
+    "app": {
+      "applications": 13,
+      "contention_set": 13,
+      "delegated": 1,
+      "withdrawn": 12,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 3
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "Largest contention set in the 2012 round (13 applicants). Resolved via ICANN last-resort auction; won by Charleston Road Registry (Google). 2 LRO objections filed and dismissed.",
+      "score": 0
+    },
+    "hotel": {
+      "applications": 12,
+      "contention_set": 12,
+      "delegated": 2,
+      "withdrawn": 10,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "12-applicant contention set. Community objection filed by hospitality industry bodies. Resolved via private agreement and auctions; .hotel delegated to multiple operators.",
+      "score": 0
+    },
+    "music": {
+      "applications": 11,
+      "contention_set": 11,
+      "delegated": 2,
+      "withdrawn": 9,
+      "objections": {
+        "community": 1,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 2
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "11 applicants; community objection from music industry organisations citing lack of broad community support. Resolved via auction and private settlement.",
+      "score": 0
+    },
+    "baby": {
+      "applications": 11,
+      "contention_set": 11,
+      "delegated": 1,
+      "withdrawn": 10,
+      "objections": {
+        "community": 0,
+        "lro": 3,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "11 applicants; 3 LRO objections filed. Resolved via last-resort auction.",
+      "score": 0
+    },
+    "book": {
+      "applications": 11,
+      "contention_set": 11,
+      "delegated": 1,
+      "withdrawn": 10,
+      "objections": {
+        "community": 0,
+        "lro": 4,
+        "lpi": 0,
+        "sco": 2
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "11 applicants; 4 LRO objections (booksellers / publishers asserting trademark rights). Resolved via last-resort auction.",
+      "score": 0
+    },
+    "tours": {
+      "applications": 11,
+      "contention_set": 11,
+      "delegated": 1,
+      "withdrawn": 10,
+      "objections": {
+        "community": 0,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "11 applicants; resolved via last-resort auction.",
+      "score": 0
+    },
+    "media": {
+      "applications": 11,
+      "contention_set": 11,
+      "delegated": 3,
+      "withdrawn": 8,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "11 applicants; multiple operators delegated after private agreements and auctions.",
+      "score": 0
+    },
+    "news": {
+      "applications": 9,
+      "contention_set": 9,
+      "delegated": 2,
+      "withdrawn": 7,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "9 applicants; 2 LRO objections from news organisations. Resolved via private agreement and auction.",
+      "score": 0
+    },
+    "blog": {
+      "applications": 9,
+      "contention_set": 9,
+      "delegated": 1,
+      "withdrawn": 8,
+      "objections": {
+        "community": 0,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 2
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "9 applicants; resolved via last-resort auction.",
+      "score": 0
+    },
+    "shop": {
+      "applications": 9,
+      "contention_set": 9,
+      "delegated": 2,
+      "withdrawn": 7,
+      "objections": {
+        "community": 0,
+        "lro": 3,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "9 applicants; 3 LRO objections. Resolved via auction and agreement.",
+      "score": 0
+    },
+    "web": {
+      "applications": 9,
+      "contention_set": 9,
+      "delegated": 1,
+      "withdrawn": 8,
+      "objections": {
+        "community": 0,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 2
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "9 applicants; resolved via last-resort auction.",
+      "score": 0
+    },
+    "search": {
+      "applications": 9,
+      "contention_set": 9,
+      "delegated": 1,
+      "withdrawn": 8,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "9 applicants; 2 LRO objections from search-engine brand holders. Resolved via last-resort auction.",
+      "score": 0
+    },
+    "inc": {
+      "applications": 9,
+      "contention_set": 9,
+      "delegated": 1,
+      "withdrawn": 8,
+      "objections": {
+        "community": 0,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "9 applicants; resolved via last-resort auction (AFNIC).",
+      "score": 0
+    },
+    "art": {
+      "applications": 8,
+      "contention_set": 8,
+      "delegated": 1,
+      "withdrawn": 7,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "8 applicants; community objection from arts sector bodies. Delegated to UK Creative Ideas Limited.",
+      "score": 0
+    },
+    "cloud": {
+      "applications": 8,
+      "contention_set": 8,
+      "delegated": 2,
+      "withdrawn": 6,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "8 applicants; 2 LRO objections. Resolved via private agreement.",
+      "score": 0
+    },
+    "llc": {
+      "applications": 8,
+      "contention_set": 8,
+      "delegated": 1,
+      "withdrawn": 7,
+      "objections": {
+        "community": 0,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "8 applicants; resolved via last-resort auction.",
+      "score": 0
+    },
+    "video": {
+      "applications": 8,
+      "contention_set": 8,
+      "delegated": 1,
+      "withdrawn": 7,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "8 applicants; 2 LRO objections. Resolved via last-resort auction.",
+      "score": 0
+    },
+    "band": {
+      "applications": 6,
+      "contention_set": 6,
+      "delegated": 1,
+      "withdrawn": 5,
+      "objections": {
+        "community": 0,
+        "lro": 3,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "6 applicants; 3 LRO objections from music-industry trademark holders. Resolved via last-resort auction.",
+      "score": 0
+    },
+    "film": {
+      "applications": 6,
+      "contention_set": 6,
+      "delegated": 1,
+      "withdrawn": 5,
+      "objections": {
+        "community": 1,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "6 applicants; community objection from film-industry bodies. 2 LRO objections. Resolved via private agreement.",
+      "score": 0
+    },
+    "game": {
+      "applications": 6,
+      "contention_set": 6,
+      "delegated": 1,
+      "withdrawn": 5,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "6 applicants; 2 LRO objections. Resolved via last-resort auction.",
+      "score": 0
+    },
+    "free": {
+      "applications": 6,
+      "contention_set": 6,
+      "delegated": 1,
+      "withdrawn": 5,
+      "objections": {
+        "community": 0,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 2
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "6 applicants; resolved via last-resort auction.",
+      "score": 0
+    },
+    "green": {
+      "applications": 5,
+      "contention_set": 5,
+      "delegated": 1,
+      "withdrawn": 4,
+      "objections": {
+        "community": 0,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "5 applicants; resolved via private agreement.",
+      "score": 0
+    },
+    "live": {
+      "applications": 5,
+      "contention_set": 5,
+      "delegated": 1,
+      "withdrawn": 4,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 1
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "5 applicants; 2 LRO objections. Resolved via last-resort auction.",
+      "score": 0
+    },
+    "love": {
+      "applications": 5,
+      "contention_set": 5,
+      "delegated": 1,
+      "withdrawn": 4,
+      "objections": {
+        "community": 0,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "5 applicants; resolved via last-resort auction.",
+      "score": 0
+    },
+    "sport": {
+      "applications": 5,
+      "contention_set": 5,
+      "delegated": 1,
+      "withdrawn": 4,
+      "objections": {
+        "community": 2,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "5 applicants; 2 community objections from international sports bodies (including SportAccord). Resolved after protracted dispute.",
+      "score": 0
+    },
+    "poker": {
+      "applications": 5,
+      "contention_set": 5,
+      "delegated": 1,
+      "withdrawn": 4,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 1,
+        "sco": 0
+      },
+      "outcome": "contention_auction",
+      "outcome_note": "5 applicants; 1 LPI objection (gaming/morality grounds, dismissed); 2 LRO objections. Resolved via last-resort auction.",
+      "score": 0
+    },
+    "health": {
+      "applications": 4,
+      "contention_set": 4,
+      "delegated": 1,
+      "withdrawn": 3,
+      "objections": {
+        "community": 1,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "4 applicants; community objection from health-sector bodies citing public-interest concerns. Resolved via private agreement.",
+      "score": 0
+    },
+    "eco": {
+      "applications": 4,
+      "contention_set": 4,
+      "delegated": 1,
+      "withdrawn": 3,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "4 applicants; community objection. Resolved via private agreement; delegated to Big Room Inc. with environmental community obligations.",
+      "score": 0
+    },
+    "amazon": {
+      "applications": 1,
+      "contention_set": 1,
+      "delegated": 1,
+      "withdrawn": 0,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "delayed_delegated",
+      "outcome_note": "Community objection filed by ACTO (Amazon Cooperation Treaty Organization) representing 8 Amazon-basin nations, citing geographic and cultural significance of the Amazon name. ICANN Board overrode the community objection panel; Amazon.com eventually received delegation after years of controversy and diplomatic escalation.",
+      "score": 20
+    },
+    "africa": {
+      "applications": 2,
+      "contention_set": 2,
+      "delegated": 1,
+      "withdrawn": 1,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "Community objection from African Union bodies citing geographic name and need for AU endorsement. Resolved in favour of applicant with community obligations; delegated to ZACR.",
+      "score": 0
+    },
+    "patagonia": {
+      "applications": 1,
+      "contention_set": 1,
+      "delegated": 0,
+      "withdrawn": 1,
+      "objections": {
+        "community": 1,
+        "lro": 1,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "Community objection from Argentina/Chile governments citing the geographic name Patagonia. 1 LRO objection from Patagonia Inc. (outdoor brand). Applicant withdrew.",
+      "score": 15
+    },
+    "gay": {
+      "applications": 4,
+      "contention_set": 4,
+      "delegated": 1,
+      "withdrawn": 3,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 1,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "Community objection from LGBTQ+ advocacy groups; LPI objection (dismissed by ICC Expert Panel \u2014 string is not contrary to international public order). Delegated to Top Level Design LLC.",
+      "score": 0
+    },
+    "islam": {
+      "applications": 2,
+      "contention_set": 2,
+      "delegated": 0,
+      "withdrawn": 2,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 1,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "LPI objection (ICC) and community objection (OIC \u2014 Organisation of Islamic Cooperation). Both applicants withdrew; string never delegated.",
+      "score": 20
+    },
+    "catholic": {
+      "applications": 1,
+      "contention_set": 1,
+      "delegated": 1,
+      "withdrawn": 0,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 1,
+        "sco": 0
+      },
+      "outcome": "delayed_delegated",
+      "outcome_note": "Community objection from the Holy See (Vatican); LPI objection. Both dismissed. Delegated to Pontificium Consilium de Comunicationibus Socialibus.",
+      "score": 0
+    },
+    "christian": {
+      "applications": 3,
+      "contention_set": 3,
+      "delegated": 1,
+      "withdrawn": 2,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 1,
+        "sco": 0
+      },
+      "outcome": "contention_resolved",
+      "outcome_note": "Community and LPI objections from religious bodies. LPI dismissed by ICC; community objection resolved in favour of applicant. Delegated to ICANN-backed registry.",
+      "score": 0
+    },
+    "broadway": {
+      "applications": 1,
+      "contention_set": 1,
+      "delegated": 0,
+      "withdrawn": 1,
+      "objections": {
+        "community": 0,
+        "lro": 2,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "2 LRO objections from theatrical trademark holders. Applicant withdrew after objection filings.",
+      "score": 15
+    },
+    "rugby": {
+      "applications": 1,
+      "contention_set": 1,
+      "delegated": 0,
+      "withdrawn": 1,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "Community objection from World Rugby (formerly IRB) citing exclusive sport-governance rights. Applicant withdrew.",
+      "score": 18
+    },
+    "cricket": {
+      "applications": 1,
+      "contention_set": 1,
+      "delegated": 0,
+      "withdrawn": 1,
+      "objections": {
+        "community": 1,
+        "lro": 0,
+        "lpi": 0,
+        "sco": 0
+      },
+      "outcome": "all_withdrawn",
+      "outcome_note": "Community objection from ICC (International Cricket Council) citing sport-governance rights. Applicant withdrew.",
+      "score": 18
+    }
+  }
+}
