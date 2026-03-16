@@ -221,6 +221,7 @@ class RiskAssessor:
             "history_2012": None,
             "gi_risks": [],
             "gac_warnings": None,
+            "company_risks": [],
             "geo_flag": False,
             "geo_note": "",
             "aural_dm": ("", ""),
@@ -248,7 +249,7 @@ class RiskAssessor:
                     "colour": colour, "level": label, "score": 0, "summary": elig.reason,
                     "factors": [], "sse_risks": [], "sco_risks": [], "plural_risks": [],
                     "lro_risks": [], "lpi_risks": [], "history_2012": None,
-                    "gi_risks": [], "gac_warnings": None,
+                    "gi_risks": [], "gac_warnings": None, "company_risks": [],
                     "geo_flag": False, "geo_note": "", "aural_dm": ("", ""), "aural_sdx": ""}
 
         # ── Visual similarity ─────────────────────────────────────────────────
@@ -485,7 +486,26 @@ class RiskAssessor:
                                 "GI body or have explicit written authorisation from it."),
                 source=gi_hit["protection"]))
 
-        # Factor 15 — No signals
+        # Factor 15 — Listed-company TLD candidate
+        company_hits = db.get_company_matches(s)
+        if company_hits:
+            total = len(company_hits)
+            shown = company_hits[:5]
+            names = "; ".join(h["company"] for h in shown)
+            if total > 5:
+                names += f" … and {total - 5} more"
+            add(RiskFactor("Listed-Company TLD Candidate",
+                score=20,
+                description=(f"'{s}' is listed as a TLD candidate label for {total} "
+                             f"stock-listed company/companies: {names}. "
+                             f"Any of these companies may hold registered trademarks on this "
+                             f"string and could file a Legal Rights Objection (§4.5.1.3)."),
+                recommendation=("Run a full trademark clearance search (WIPO Global Brand DB, "
+                                "TMCH, USPTO TESS, EUIPO) for each matching company. "
+                                "Contact the companies' IP counsel if you are not the rights holder."),
+                source="company_tld_candidates.json (stock exchange listings)"))
+
+        # Factor 16 — No signals
         if not factors:
             add(RiskFactor("No Known High-Risk Signals Detected", score=5,
                 description=(f"'{s}' does not match any high-risk pattern across IANA TLD list, "
@@ -527,7 +547,7 @@ class RiskAssessor:
                 "factors": factors, "sse_risks": sse_risks, "sco_risks": sco_risks,
                 "plural_risks": plural_hits, "lro_risks": lro_hits, "lpi_risks": lpi_hits,
                 "history_2012": h12,
-                "gi_risks": gi_risks, "gac_warnings": gac,
+                "gi_risks": gi_risks, "gac_warnings": gac, "company_risks": company_hits,
                 "geo_flag": elig.geo_flag, "geo_note": elig.geo_note,
                 "aural_dm": (aur_sim["dm_primary"], aur_sim["dm_secondary"]),
                 "aural_sdx": aur_sim["soundex"]}

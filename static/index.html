@@ -5,16 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>gTLD Application Risk Checker</title>
   <style>
+    /* ── Theme tokens (light) ──────────────────────────────────────────── */
+    :root {
+      --bg:            #f7f8fa;
+      --surface:       #ffffff;
+      --border:        #e2e8f0;
+      --text:          #1a202c;
+      --text-sub:      #4a5568;
+      --text-muted:    #718096;
+      --text-dim:      #a0aec0;
+      --accent:        #667eea;
+      --focus-ring:    rgba(102, 126, 234, 0.14);
+      --pill-bg:       #edf2f7;
+      --pill-border:   #e2e8f0;
+      --pill-text:     #2d3748;
+      --pill-x:        #a0aec0;
+      --pill-x-hover:  #c53030;
+      --btn-bg:        #1a202c;
+      --btn-text:      #ffffff;
+      --btn-hover:     #2d3748;
+      --status-bg:     #ffffff;
+      --chip-bg:       #f7f8fa;
+      --chip-hover-bg: #edf2f7;
+      --chip-hover-tx: #4a5568;
+      --err-bg:        #fff5f5;
+      --err-border:    #fed7d7;
+      --err-text:      #c53030;
+      --spin-track:    #e2e8f0;
+      --toggle-bg:     #ffffff;
+    }
+
+    /* ── Theme tokens (dark / futuristic) ─────────────────────────────── */
+    html.dark {
+      --bg:            #080c14;
+      --surface:       #0d1629;
+      --border:        #162848;
+      --text:          #cdd6f4;
+      --text-sub:      #8892a4;
+      --text-muted:    #5a6a82;
+      --text-dim:      #3a4a62;
+      --accent:        #38bdf8;
+      --focus-ring:    rgba(56, 189, 248, 0.18);
+      --pill-bg:       #0f1e3a;
+      --pill-border:   #1e3560;
+      --pill-text:     #7dd3fc;
+      --pill-x:        #2a4070;
+      --pill-x-hover:  #ff6b6b;
+      --btn-bg:        #38bdf8;
+      --btn-text:      #080c14;
+      --btn-hover:     #7dd3fc;
+      --status-bg:     #0d1629;
+      --chip-bg:       #0b1220;
+      --chip-hover-bg: #162848;
+      --chip-hover-tx: #8892a4;
+      --err-bg:        #1a0505;
+      --err-border:    #4a1010;
+      --err-text:      #ff6b6b;
+      --spin-track:    #162848;
+      --toggle-bg:     #0d1629;
+    }
+
     /* ── Reset + base ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { transition: background 0.25s, color 0.25s; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 13px;
       line-height: 1.6;
-      background: #f7f8fa;
-      color: #1a202c;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
+      transition: background 0.25s, color 0.25s;
     }
+
+    /* ── Dark-mode toggle (fixed, top-right) ──────────────────────────── */
+    .sc-theme-toggle {
+      position: fixed;
+      top: 14px;
+      right: 20px;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--toggle-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px 5px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-sub);
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.2s, color 0.2s, background 0.25s, box-shadow 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .sc-theme-toggle:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+    /* pill track */
+    .sc-theme-track {
+      position: relative;
+      width: 28px;
+      height: 14px;
+      background: var(--border);
+      border-radius: 7px;
+      flex-shrink: 0;
+      transition: background 0.25s;
+    }
+    html.dark .sc-theme-track { background: var(--accent); }
+    /* sliding knob */
+    .sc-theme-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.25s, background 0.25s;
+    }
+    html.dark .sc-theme-knob { transform: translateX(14px); background: #080c14; }
+    /* icon */
+    .sc-theme-icon { font-size: 13px; line-height: 1; }
 
     /* ── Page layout ──────────────────────────────────────────────────── */
     .sc-page {
@@ -28,50 +142,102 @@
     .sc-header h1 {
       font-size: 20px;
       font-weight: 700;
-      color: #1a202c;
+      color: var(--text);
       letter-spacing: -0.01em;
     }
     .sc-header .sc-subtitle {
-      color: #718096;
+      color: var(--text-muted);
       font-size: 12px;
       margin-top: 4px;
     }
 
     /* ── Search card ──────────────────────────────────────────────────── */
     .sc-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 24px 28px;
       margin-bottom: 16px;
+      transition: background 0.25s, border-color 0.25s;
     }
     .sc-label {
       display: block;
       font-size: 11px;
       font-weight: 700;
-      color: #4a5568;
+      color: var(--text-sub);
       text-transform: uppercase;
       letter-spacing: 0.07em;
       margin-bottom: 8px;
+      transition: color 0.25s;
     }
-    .sc-textarea {
-      width: 100%;
-      border: 1px solid #e2e8f0;
+
+    /* ── Tag / pill input ─────────────────────────────────────────────── */
+    .sc-tag-input {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 10px 12px;
+      padding: 7px 10px;
+      min-height: 44px;
+      background: var(--bg);
+      cursor: text;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.25s;
+    }
+    .sc-tag-input:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+    /* futuristic glow on focus in dark mode */
+    html.dark .sc-tag-input:focus-within {
+      box-shadow: 0 0 0 3px var(--focus-ring), 0 0 12px rgba(56,189,248,0.12);
+    }
+    .sc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--pill-bg);
+      border: 1px solid var(--pill-border);
+      border-radius: 4px;
+      padding: 2px 5px 2px 9px;
+      font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace;
+      font-size: 12px;
+      color: var(--pill-text);
+      white-space: nowrap;
+      line-height: 1.5;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    /* subtle cyan left-border accent in dark mode */
+    html.dark .sc-pill { border-left: 2px solid var(--accent); }
+    .sc-pill-x {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: none;
+      color: var(--pill-x);
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: color 0.1s;
+    }
+    .sc-pill-x:hover { color: var(--pill-x-hover); }
+    .sc-tag-inner {
+      border: none;
+      outline: none;
+      background: transparent;
       font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace;
       font-size: 13px;
-      color: #1a202c;
-      background: #fdfdfe;
-      resize: vertical;
-      min-height: 88px;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      color: var(--text);
+      min-width: 160px;
+      flex: 1;
+      padding: 2px 0;
     }
-    .sc-textarea:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
-    }
+    .sc-tag-inner::placeholder { color: var(--text-dim); }
+
     .sc-card-footer {
       display: flex;
       align-items: center;
@@ -80,21 +246,33 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .sc-hint { color: #a0aec0; font-size: 11px; }
+    .sc-hint { color: var(--text-dim); font-size: 11px; transition: color 0.25s; }
+    .sc-hint kbd {
+      font-family: inherit;
+      background: var(--border);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 10px;
+      color: var(--text-sub);
+      transition: background 0.25s, color 0.25s;
+    }
     .sc-btn {
-      background: #1a202c;
-      color: #fff;
+      background: var(--btn-bg);
+      color: var(--btn-text);
       border: none;
       border-radius: 6px;
       padding: 8px 22px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
+      transition: background 0.15s, opacity 0.15s, box-shadow 0.2s;
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .sc-btn:hover:not(:disabled) { background: #2d3748; }
+    .sc-btn:hover:not(:disabled) { background: var(--btn-hover); }
+    html.dark .sc-btn:hover:not(:disabled) {
+      box-shadow: 0 0 14px rgba(56,189,248,0.35);
+    }
     .sc-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
     /* ── Status bar ───────────────────────────────────────────────────── */
@@ -103,29 +281,30 @@
       align-items: center;
       gap: 12px;
       padding: 12px 18px;
-      background: #fff;
-      border: 1px solid #e2e8f0;
+      background: var(--status-bg);
+      border: 1px solid var(--border);
       border-radius: 8px;
       margin-bottom: 16px;
+      transition: background 0.25s, border-color 0.25s;
     }
     .sc-status.hidden { display: none; }
     .sc-spinner {
       width: 16px;
       height: 16px;
-      border: 2px solid #e2e8f0;
-      border-top-color: #667eea;
+      border: 2px solid var(--spin-track);
+      border-top-color: var(--accent);
       border-radius: 50%;
       animation: sc-spin 0.7s linear infinite;
       flex-shrink: 0;
     }
     @keyframes sc-spin { to { transform: rotate(360deg); } }
-    .sc-status-text { color: #4a5568; font-size: 12px; flex: 1; }
+    .sc-status-text { color: var(--text-sub); font-size: 12px; flex: 1; transition: color 0.25s; }
     .sc-job-chip {
       font-family: ui-monospace, monospace;
       font-size: 10px;
-      color: #718096;
-      background: #f7f8fa;
-      border: 1px solid #e2e8f0;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
       border-radius: 4px;
       padding: 2px 8px;
       cursor: pointer;
@@ -135,19 +314,21 @@
       max-width: 260px;
       flex-shrink: 0;
       user-select: none;
+      transition: background 0.15s, color 0.15s;
     }
-    .sc-job-chip:hover { background: #edf2f7; color: #4a5568; }
+    .sc-job-chip:hover { background: var(--chip-hover-bg); color: var(--chip-hover-tx); }
     .sc-job-chip.hidden { display: none; }
 
     /* ── Error banner ─────────────────────────────────────────────────── */
     .sc-error {
-      background: #fff5f5;
-      border: 1px solid #fed7d7;
-      color: #c53030;
+      background: var(--err-bg);
+      border: 1px solid var(--err-border);
+      color: var(--err-text);
       border-radius: 8px;
       padding: 12px 18px;
       font-size: 12px;
       margin-bottom: 16px;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
     }
     .sc-error.hidden { display: none; }
 
@@ -162,6 +343,19 @@
 </head>
 <body>
 
+<!-- ── Dark-mode toggle ──────────────────────────────────────────────────── -->
+<button
+  class="sc-theme-toggle"
+  id="sc-theme-toggle"
+  onclick="scToggleTheme()"
+  aria-label="Toggle dark mode"
+  aria-pressed="false"
+>
+  <span class="sc-theme-icon" id="sc-theme-icon">☾</span>
+  <span class="sc-theme-track"><span class="sc-theme-knob"></span></span>
+  <span id="sc-theme-label">Dark</span>
+</button>
+
 <div class="sc-page">
 
   <header class="sc-header">
@@ -173,17 +367,29 @@
   </header>
 
   <div class="sc-card">
-    <label class="sc-label" for="sc-input">TLD string(s) to assess</label>
-    <textarea
-      id="sc-input"
-      class="sc-textarea"
-      rows="4"
-      placeholder="corp&#10;home&#10;mail&#10;&#10;One per line, or comma-separated — no leading dot needed"
-      autofocus
-    ></textarea>
+    <label class="sc-label" id="sc-input-label">TLD string(s) to assess</label>
+    <div
+      class="sc-tag-input"
+      id="sc-tag-input"
+      role="group"
+      aria-labelledby="sc-input-label"
+      onclick="document.getElementById('sc-tag-inner').focus()"
+    >
+      <input
+        type="text"
+        id="sc-tag-inner"
+        class="sc-tag-inner"
+        placeholder="corp, home, mail… (Space or Enter to add)"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        autofocus
+      >
+    </div>
     <div class="sc-card-footer">
-      <span class="sc-hint">
-        One per line or comma-separated &nbsp;·&nbsp; max 20 strings
+      <span class="sc-hint" id="sc-tag-hint">
+        Space, comma, or Enter to add a label &nbsp;·&nbsp; max 20
         &nbsp;·&nbsp; <kbd>Ctrl+Enter</kbd> to submit
       </span>
       <button id="sc-submit" class="sc-btn" onclick="scSubmit()">Assess ›</button>
@@ -220,21 +426,103 @@
   const SC_POLL_MS    = 1500;   // poll interval in milliseconds
   const SC_TIMEOUT_S  = 90;     // give up polling after this many seconds
 
+  // ── Theme ─────────────────────────────────────────────────────────────────
+  (function () {
+    // Respect saved preference; fall back to system preference
+    const saved      = localStorage.getItem('sc-theme');
+    const sysDark    = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const startsDark = saved ? saved === 'dark' : sysDark;
+    if (startsDark) document.documentElement.classList.add('dark');
+    _scSyncToggleUI(startsDark);
+  })();
+
+  function _scSyncToggleUI(isDark) {
+    const icon  = document.getElementById('sc-theme-icon');
+    const label = document.getElementById('sc-theme-label');
+    const btn   = document.getElementById('sc-theme-toggle');
+    if (!icon) return;
+    icon.textContent  = isDark ? '☀' : '☾';
+    label.textContent = isDark ? 'Light' : 'Dark';
+    btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+  }
+
+  function scToggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('sc-theme', isDark ? 'dark' : 'light');
+    _scSyncToggleUI(isDark);
+    // Propagate to any already-rendered report iframes
+    document.querySelectorAll('.sc-report-frame').forEach(function (f) {
+      try { f.contentDocument.documentElement.classList.toggle('dark', isDark); } catch (_) {}
+    });
+  }
+
   // ── State ─────────────────────────────────────────────────────────────────
   let scPollTimer    = null;
   let scCurrentJobId = null;
+  const scTags       = [];      // current set of committed label pills
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
-  function scParseStrings(raw) {
-    return raw
-      .replace(/,/g, '\n')
-      .split('\n')
-      .map(s => s.trim().replace(/^\.+/, ''))   // strip leading dots
-      .filter(Boolean)
-      .filter((v, i, a) => a.indexOf(v) === i)  // deduplicate
-      .slice(0, 20);
+  // ── Tag input helpers ─────────────────────────────────────────────────────
+  function scNormalize(val) {
+    return val.trim().toLowerCase().replace(/^\.+/, '');
   }
 
+  function scAddTag(raw) {
+    const val = scNormalize(raw);
+    if (!val || scTags.includes(val) || scTags.length >= 20) return;
+    scTags.push(val);
+    scRenderPills();
+  }
+
+  function scRemoveTag(idx) {
+    scTags.splice(idx, 1);
+    scRenderPills();
+    document.getElementById('sc-tag-inner').focus();
+  }
+
+  function scRenderPills() {
+    const container = document.getElementById('sc-tag-input');
+    const inner     = document.getElementById('sc-tag-inner');
+    container.querySelectorAll('.sc-pill').forEach(el => el.remove());
+    scTags.forEach((tag, i) => {
+      const pill = document.createElement('span');
+      pill.className = 'sc-pill';
+      pill.innerHTML =
+        `${tag}<button class="sc-pill-x" onclick="scRemoveTag(${i})" ` +
+        `tabindex="-1" aria-label="Remove ${tag}">\u00d7</button>`;
+      container.insertBefore(pill, inner);
+    });
+    inner.placeholder = scTags.length ? '' : 'corp, home, mail\u2026 (Space or Enter to add)';
+  }
+
+  // ── Tag input event wiring ────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    const inner = document.getElementById('sc-tag-inner');
+
+    inner.addEventListener('keydown', function (e) {
+      if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          scSubmit();
+          return;
+        }
+        e.preventDefault();
+        const val = inner.value.trim();
+        if (val) scAddTag(val);
+        inner.value = '';
+      } else if (e.key === 'Backspace' && inner.value === '' && scTags.length) {
+        scRemoveTag(scTags.length - 1);
+      }
+    });
+
+    inner.addEventListener('paste', function (e) {
+      e.preventDefault();
+      const text = e.clipboardData.getData('text');
+      text.split(/[\s,\n]+/).forEach(scAddTag);
+      inner.value = '';
+    });
+  });
+
+  // ── Shared helpers ────────────────────────────────────────────────────────
   function scShowError(msg) {
     const el = document.getElementById('sc-error');
     el.textContent = msg;
@@ -257,16 +545,18 @@
 
   // ── Submit ────────────────────────────────────────────────────────────────
   async function scSubmit() {
-    // Cancel any in-flight poll
+    const inner   = document.getElementById('sc-tag-inner');
+    const pending = inner.value.trim();
+    if (pending) { scAddTag(pending); inner.value = ''; }
+
     if (scPollTimer) { clearInterval(scPollTimer); scPollTimer = null; }
     scHideError();
     document.getElementById('sc-report').innerHTML = '';
 
-    const raw     = document.getElementById('sc-input').value;
-    const strings = scParseStrings(raw);
-
+    const strings = [...scTags];
     if (!strings.length) {
-      scShowError('Please enter at least one TLD string.');
+      scShowError('Please add at least one TLD label.');
+      inner.focus();
       return;
     }
 
@@ -328,10 +618,10 @@
       let job;
       try {
         const resp = await fetch(`${SC_API_BASE}/api/jobs/${jobId}`);
-        if (!resp.ok) return;   // transient — keep polling
+        if (!resp.ok) return;
         job = await resp.json();
       } catch (_) {
-        return;                 // network hiccup — keep polling
+        return;
       }
 
       if (job.status === 'complete') {
@@ -346,7 +636,6 @@
         statusEl.classList.add('hidden');
         scShowError(`Assessment error: ${job.error}`);
       }
-      // status === 'pending' → keep polling
     }, SC_POLL_MS);
   }
 
@@ -355,35 +644,27 @@
     const container = document.getElementById('sc-report');
     container.innerHTML = '';
 
-    // srcdoc iframe sandboxes the report's own CSS from this page.
-    // contentDocument access works because srcdoc is same-origin.
     const iframe = document.createElement('iframe');
     iframe.className = 'sc-report-frame';
-    iframe.style.height = '200px';       // grow after load
+    iframe.style.height = '200px';
     iframe.setAttribute('title', 'Risk Assessment Report');
     iframe.setAttribute('srcdoc', html);
 
     iframe.addEventListener('load', function () {
       try {
+        // Sync theme before measuring so scrollHeight is correct for the active theme
+        const isDark = document.documentElement.classList.contains('dark');
+        this.contentDocument.documentElement.classList.toggle('dark', isDark);
         const h = this.contentDocument.documentElement.scrollHeight;
         this.style.height = (h + 16) + 'px';
       } catch (_) {
-        this.style.height = '1200px';   // fallback if cross-origin restriction
+        this.style.height = '1200px';
       }
     });
 
     container.appendChild(iframe);
-    // Scroll to report
     setTimeout(() => iframe.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   }
-
-  // ── Keyboard shortcut: Ctrl+Enter / Cmd+Enter submits ─────────────────────
-  document.getElementById('sc-input').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      scSubmit();
-    }
-  });
 </script>
 
 </body>

@@ -44,6 +44,19 @@ class CollisionDatabase:
         self.sacred_sites    = self._load_json("sacred_sites.json").get("strings", {})
         self.world_heritage  = self._load_json("world_heritage_sites.json").get("strings", {})
         self.wipo_gi         = self._load_json("wipo_gi.json").get("strings", {})
+
+        # Reverse index: label (lowercase) → [company_name, ...]
+        # Built from company_tld_candidates.json which lives in data/ but is not seeded
+        # (it's a large hand-curated file, not regenerated on every fresh install)
+        self.company_labels: dict[str, list[str]] = {}
+        raw_companies = self._load_json("company_tld_candidates.json")
+        if isinstance(raw_companies, list):
+            for entry in raw_companies:
+                company = entry.get("company", "")
+                for label in entry.get("labels", []):
+                    key = label.lower().strip()
+                    if key:
+                        self.company_labels.setdefault(key, []).append(company)
         print(DIM("  [db] Loading network sources …"))
         self.delegated_tlds = self.fetcher.get_delegated_tlds()
         self.special_use    = self.fetcher.get_special_use_names()
@@ -81,6 +94,14 @@ class CollisionDatabase:
     def get_sacred_site(self, s):    return self.sacred_sites.get(s)
     def get_world_heritage(self, s): return self.world_heritage.get(s)
     def get_gi(self, s):             return self.wipo_gi.get(s)
+
+    def get_company_matches(self, s) -> list[dict]:
+        """Return companies that list *s* as a TLD candidate label.
+
+        Each hit: {"company": str, "matched_label": str}
+        """
+        companies = self.company_labels.get(s, [])
+        return [{"company": c, "matched_label": s} for c in companies]
 
     def data_file_meta(self):
         rows = []
