@@ -31,24 +31,22 @@ _CSS = """
   --rec-color:   #2b6cb0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg:          #080c14;
-    --surface:     #0d1629;
-    --border:      #162848;
-    --text:        #cdd6f4;
-    --text-sub:    #8892a4;
-    --text-muted:  #5a6a82;
-    --text-dim:    #3a4a62;
-    --card-warn-border: #f59e0b;
-    --card-stop-border: #f87171;
-    --card-info-border: #38bdf8;
-    --card-warn-bg: transparent;
-    --card-stop-bg: transparent;
-    --card-info-bg: transparent;
-    --factor-sep:  #162848;
-    --rec-color:   #38bdf8;
-  }
+html.dark {
+  --bg:          #080c14;
+  --surface:     #0d1629;
+  --border:      #162848;
+  --text:        #cdd6f4;
+  --text-sub:    #8892a4;
+  --text-muted:  #5a6a82;
+  --text-dim:    #3a4a62;
+  --card-warn-border: #f59e0b;
+  --card-stop-border: #f87171;
+  --card-info-border: #38bdf8;
+  --card-warn-bg: transparent;
+  --card-stop-bg: transparent;
+  --card-info-bg: transparent;
+  --factor-sep:  #162848;
+  --rec-color:   #38bdf8;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -71,7 +69,7 @@ body { font-family: system-ui, -apple-system, sans-serif; font-size: 12px;
 /* ── score (plain text, no pill) ── */
 .score-row { display: flex; align-items: baseline; gap: 6px; margin: 8px 0 4px; }
 .score-label { font-size: 12px; color: var(--text-muted); }
-.score-val { font-size: 12px; font-weight: 400; }
+.score-val   { font-size: 12px; font-weight: 400; color: var(--text-muted); }
 .score-level { font-size: 12px; color: var(--text-muted); }
 .dm-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 20px;
            font-family: monospace; }
@@ -136,13 +134,11 @@ body { font-family: system-ui, -apple-system, sans-serif; font-size: 12px;
 .lvl-default  { color: var(--text-sub); }
 
 /* ── risk level colors (dark / futuristic) ── */
-@media (prefers-color-scheme: dark) {
-  .lvl-high     { color: #ff6b6b; }
-  .lvl-moderate { color: #fbbf24; }
-  .lvl-low      { color: #34d399; }
-  .lvl-reserved { color: #c084fc; }
-  .lvl-default  { color: var(--text-sub); }
-}
+html.dark .lvl-high     { color: #ff6b6b; }
+html.dark .lvl-moderate { color: #fbbf24; }
+html.dark .lvl-low      { color: #34d399; }
+html.dark .lvl-reserved { color: #c084fc; }
+html.dark .lvl-default  { color: var(--text-sub); }
 """
 
 
@@ -155,12 +151,6 @@ _LEVEL_CLASS = {
     "RESERVED — Restricted": "lvl-reserved",
     "INVALID FORMAT":        "lvl-high",
 }
-
-
-def _level_span(level: str) -> str:
-    """Render risk level as plain styled text — no pill/badge."""
-    cls = _LEVEL_CLASS.get(level, "lvl-default")
-    return f'<span class="score-level {cls}">{_e(level)}</span>'
 
 
 
@@ -302,6 +292,31 @@ def _result_html(r: dict) -> str:
       {cards}
     </div>"""
 
+    # Listed-company risks
+    company_html = ""
+    if r.get("company_risks"):
+        hits  = r["company_risks"]
+        total = len(hits)
+        cards = ""
+        for m in hits[:10]:
+            cards += _risk_card(m, "info",
+                                m["company"],
+                                [f"matched label: {m['matched_label']}"],
+                                ("This company may hold registered trademarks on this string "
+                                 "and could file a Legal Rights Objection (§4.5.1.3)."),
+                                "company_tld_candidates.json")
+        more = (f'<div class="section-note" style="margin-top:6px">'
+                f'… and {total - 10} more companies match this label.</div>'
+                if total > 10 else "")
+        company_html = f"""
+    <div class="section">
+      <div class="section-title">ℹ Listed-Company TLD Candidates — §4.5.1.3 (Trademark)</div>
+      <div class="section-note">'{_e(r["string"])}' appears as a TLD candidate label for
+        {_e(str(total))} stock-listed {'company' if total == 1 else 'companies'}.
+        Any rights holder may file an LRO. NOT a hard stop unless an LRO succeeds.</div>
+      {cards}{more}
+    </div>"""
+
     # LPI risks
     lpi_html = ""
     if r.get("lpi_risks"):
@@ -390,20 +405,26 @@ def _result_html(r: dict) -> str:
 
     return f"""
   <div class="result">
-    <div class="section-title">Name Collision Risk</div>
-    <div class="score-row">
-      <span class="score-label">Score:</span>
-      <span class="score-val {lvl_cls}">{score}/100</span>
-      <span class="score-level">·</span>
-      {_level_span(level)}
+    <div class="result-title">
+      <span class="tld">.{_e(s.upper())}</span><span class="sep">|</span><span class="rpt-label">Application Risk Report</span>
     </div>
-    <div class="dm-meta">
-      DM primary='{_e(dm_p)}'  secondary='{_e(dm_s)}'  Soundex='{_e(sdx)}'
+    <div class="section">
+      <div class="section-title">Name Collision Risk</div>
+      <div class="score-row">
+        <span class="score-label">Score:</span>
+        <span class="score-val">{score}/100</span>
+        <span class="score-level">·</span>
+        <span class="score-level">{_e(level)}</span>
+      </div>
+      <div class="dm-meta">
+        DM primary='{_e(dm_p)}'  secondary='{_e(dm_s)}'  Soundex='{_e(sdx)}'
+      </div>
     </div>
     {sse_html}
     {sco_html}
     {plural_html}
     {lro_html}
+    {company_html}
     {lpi_html}
     {h12_html}
     {geo_html}
@@ -433,6 +454,15 @@ def render_html(results: list[dict]) -> str:
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{_e(h1)}</title>
   <style>{_CSS}</style>
+  <script>
+    (function(){{
+      var mq = window.matchMedia('(prefers-color-scheme: dark)');
+      if (mq.matches) document.documentElement.classList.add('dark');
+      mq.addEventListener('change', function(e) {{
+        document.documentElement.classList.toggle('dark', e.matches);
+      }});
+    }})();
+  </script>
 </head>
 <body>
 <div class="page">
