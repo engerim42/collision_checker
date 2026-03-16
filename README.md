@@ -1,5 +1,5 @@
 # gTLD Application Risk Checker
-> **Current Version: 1.0.0**
+> **Current Version: 1.0.1**
 
 Assesses proposed new gTLD strings against ICANN eligibility rules and name
 collision risk factors, based on the 2026 Applicant Guidebook and the NCAP
