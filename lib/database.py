@@ -39,6 +39,11 @@ class CollisionDatabase:
         self.history_2012    = self._load_json("history_2012.json").get("strings", {})
         self.blocked_names   = self._flatten(self._load_json("reserved_blocked.json"))
         self.reserved_names  = self._flatten(self._load_json("reserved_igo.json"))
+        self.gac_warnings    = self._load_json("gac_warnings_2012.json").get("strings", {})
+        self.sse_precedents  = self._load_json("sse_decisions_2012.json").get("pairs", {})
+        self.sacred_sites    = self._load_json("sacred_sites.json").get("strings", {})
+        self.world_heritage  = self._load_json("world_heritage_sites.json").get("strings", {})
+        self.wipo_gi         = self._load_json("wipo_gi.json").get("strings", {})
         print(DIM("  [db] Loading network sources …"))
         self.delegated_tlds = self.fetcher.get_delegated_tlds()
         self.special_use    = self.fetcher.get_special_use_names()
@@ -70,6 +75,12 @@ class CollisionDatabase:
                            ("Mail Infrastructure Leakage",  self.mail_labels)):
             if s in store: return cat, store[s]
         return None, {}
+
+    def get_gac_warnings(self, s):   return self.gac_warnings.get(s)
+    def get_sse_precedent(self, s):  return self.sse_precedents.get(s, [])
+    def get_sacred_site(self, s):    return self.sacred_sites.get(s)
+    def get_world_heritage(self, s): return self.world_heritage.get(s)
+    def get_gi(self, s):             return self.wipo_gi.get(s)
 
     def data_file_meta(self):
         rows = []

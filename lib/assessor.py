@@ -118,6 +118,26 @@ class RiskAssessor:
                         f"'{s}' is a component of country name '{name}'. "
                         f"§7.5.1 also blocks separable components. Verify in TAMS.")
                     break
+
+        # Sacred sites
+        sacred = db.get_sacred_site(s)
+        if sacred:
+            geo_flag = True
+            geo_notes.append(
+                f"'{s}' is a globally recognised sacred/religiously significant site "
+                f"({sacred['religion']}, {sacred['location']}): {sacred['significance'][:120]}. "
+                f"§7.5.3 Geographic Names Review applies. Community objection risk from "
+                f"relevant religious bodies and governments is high.")
+
+        # UNESCO World Heritage Sites
+        whs = db.get_world_heritage(s)
+        if whs:
+            geo_flag = True
+            geo_notes.append(
+                f"'{s}' is a UNESCO World Heritage Site ({whs['whs_name']}, {whs['country']}, "
+                f"inscribed {whs['inscribed']}). §7.5.3 Geographic Names Review applies. "
+                f"Host government likely to file a GAC early warning and/or community objection.")
+
         geo_note = "  ".join(geo_notes)
         return EligibilityResult("eligible", geo_flag=geo_flag, geo_note=geo_note)
 
@@ -199,6 +219,8 @@ class RiskAssessor:
             "lro_risks": [],
             "lpi_risks": [],
             "history_2012": None,
+            "gi_risks": [],
+            "gac_warnings": None,
             "geo_flag": False,
             "geo_note": "",
             "aural_dm": ("", ""),
@@ -226,6 +248,7 @@ class RiskAssessor:
                     "colour": colour, "level": label, "score": 0, "summary": elig.reason,
                     "factors": [], "sse_risks": [], "sco_risks": [], "plural_risks": [],
                     "lro_risks": [], "lpi_risks": [], "history_2012": None,
+                    "gi_risks": [], "gac_warnings": None,
                     "geo_flag": False, "geo_note": "", "aural_dm": ("", ""), "aural_sdx": ""}
 
         # ── Visual similarity ─────────────────────────────────────────────────
@@ -238,6 +261,8 @@ class RiskAssessor:
         sco_risks = aur_sim["sco_risks"]
 
         factors: list[RiskFactor] = []; score = 0
+        gi_risks: list[dict] = []
+        gac = None
         db = self.db
 
         def add(f: RiskFactor):
@@ -425,7 +450,42 @@ class RiskAssessor:
                     "https://newgtlds.icann.org/en/"
                 )))
 
-        # Factor 13 — No signals
+        # Factor 13 — GAC Early Warning (2012 round)
+        gac = db.get_gac_warnings(s)
+        if gac:
+            gov_list = ", ".join(gac["governments"][:5])
+            if len(gac["governments"]) > 5:
+                gov_list += f" + {len(gac['governments'])-5} more"
+            add(RiskFactor("GAC Early Warning — 2012 Round",
+                score=gac["score"],
+                description=(f"'{s}' received {gac['warnings']} government(s) filing GAC early "
+                             f"warning(s) in the 2012 round. Governments: {gov_list}. "
+                             f"Category: {gac['category']}. {gac['summary']}"),
+                recommendation=("GAC early warnings strongly influence ICANN Board decisions. "
+                                "In 2026, the same governments are expected to re-file warnings. "
+                                "Engage proactively with relevant government delegations before filing."),
+                source=("ICANN Governmental Advisory Committee — 2012 New gTLD Round Early Warnings. "
+                        "icann.org/en/groups/gac")))
+
+        # Factor 14 — WIPO GI Protection
+        gi_hit = db.get_gi(s)
+        gi_risks = []
+        if gi_hit:
+            gi_risks = [gi_hit]
+            add(RiskFactor("Geographical Indication (GI) Protection Risk",
+                score=gi_hit["score"],
+                description=(f"'{s}' is a protected Geographical Indication: {gi_hit['product']} "
+                             f"from {gi_hit['country']} ({gi_hit['protection']}). "
+                             f"The designated objector body is: {gi_hit['objector']}. "
+                             f"{gi_hit['note']}"),
+                recommendation=("GI-based objections may be filed as Community Objections (§4.5.1.2) "
+                                "or backed by GAC early warning. For wine and spirit GIs, TRIPS Art. 23 "
+                                "provides heightened protection — governments may also raise GI concerns "
+                                "through bilateral treaty mechanisms. Only apply if you are the designated "
+                                "GI body or have explicit written authorisation from it."),
+                source=gi_hit["protection"]))
+
+        # Factor 15 — No signals
         if not factors:
             add(RiskFactor("No Known High-Risk Signals Detected", score=5,
                 description=(f"'{s}' does not match any high-risk pattern across IANA TLD list, "
@@ -467,6 +527,7 @@ class RiskAssessor:
                 "factors": factors, "sse_risks": sse_risks, "sco_risks": sco_risks,
                 "plural_risks": plural_hits, "lro_risks": lro_hits, "lpi_risks": lpi_hits,
                 "history_2012": h12,
+                "gi_risks": gi_risks, "gac_warnings": gac,
                 "geo_flag": elig.geo_flag, "geo_note": elig.geo_note,
                 "aural_dm": (aur_sim["dm_primary"], aur_sim["dm_secondary"]),
                 "aural_sdx": aur_sim["soundex"]}
