@@ -66,6 +66,12 @@ class CollisionDatabase:
         self.un_macro      = UN_MACRO_REGIONS
         _cities_json = Path(__file__).parent / "world-cities.json"
         self.cities = load_world_cities(_cities_json)
+        _common_json = Path(__file__).parent / "common-strings.json"
+        try:
+            self.common_brand_strings: frozenset[str] = frozenset(
+                json.loads(_common_json.read_text(encoding="utf-8")))
+        except Exception:
+            self.common_brand_strings = frozenset()
 
     def reload(self): self._load()
 
@@ -78,8 +84,9 @@ class CollisionDatabase:
     def is_iso_name(self, s):    return s in self.iso_names
     def is_un_region(self, s):   return s in self.un_regions
     def is_un_macro(self, s):    return s in self.un_macro
-    def is_city(self, s):        return s in self.cities
-    def get_city(self, s):       return self.cities.get(s)   # returns "City, Country" or None
+    def is_city(self, s):               return s in self.cities
+    def get_city(self, s):              return self.cities.get(s)   # returns "City, Country" or None
+    def is_common_brand_string(self, s): return s in self.common_brand_strings
 
     def get_curated_entry(self, s):
         for cat, store in (("Prior High-Risk (2012 Round)", self.prior_high_risk),

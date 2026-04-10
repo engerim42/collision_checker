@@ -125,21 +125,21 @@ class TestEligibilityHardStops(unittest.TestCase):
         r = self.chk("europe")
         self.assertEqual(r.status, "reserved")
 
-    def test_capital_city_eligible_with_geo_flag(self):
+    def test_capital_city_eligible_with_advisory_flag(self):
         r = self.chk("paris")
         self.assertTrue(r.eligible)
-        self.assertTrue(r.geo_flag)
-        self.assertIn("city", r.geo_note.lower())
+        self.assertTrue(r.advisory_flag)
+        self.assertIn("city", r.advisory_note.lower())
 
-    def test_un_subregion_eligible_with_geo_flag(self):
+    def test_un_subregion_eligible_with_advisory_flag(self):
         r = self.chk("caribbean")
         self.assertTrue(r.eligible)
-        self.assertTrue(r.geo_flag)
+        self.assertTrue(r.advisory_flag)
 
     def test_novel_string_fully_eligible(self):
         r = self.chk("mynovelstring")
         self.assertTrue(r.eligible)
-        self.assertFalse(r.geo_flag)
+        self.assertFalse(r.advisory_flag)
 
 
 if __name__ == "__main__":

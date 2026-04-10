@@ -374,13 +374,13 @@ def _result_html(r: dict) -> str:
       {card}
     </div>"""
 
-    # Geo flag
+    # Advisory flags
     geo_html = ""
-    if r.get("geo_flag"):
+    if r.get("advisory_flag"):
         geo_html = f"""
     <div class="section">
-      <div class="section-title">⚠ Geographic Name Flag</div>
-      <div class="summary-text">{_e(r["geo_note"])}</div>
+      <div class="section-title">⚠ Application Advisories</div>
+      <div class="summary-text">{_e(r["advisory_note"])}</div>
     </div>"""
 
     # Risk factors

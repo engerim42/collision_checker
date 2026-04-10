@@ -15,16 +15,16 @@ if TYPE_CHECKING:
 
 
 class EligibilityResult:
-    __slots__ = ("status", "category", "reason", "source", "geo_flag", "geo_note")
+    __slots__ = ("status", "category", "reason", "source", "advisory_flag", "advisory_note")
 
     def __init__(self, status="eligible", category="", reason="",
-                 source="", geo_flag=False, geo_note=""):
+                 source="", advisory_flag=False, advisory_note=""):
         self.status   = status
         self.category = category
         self.reason   = reason
         self.source   = source
-        self.geo_flag = geo_flag
-        self.geo_note = geo_note
+        self.advisory_flag = advisory_flag
+        self.advisory_note = advisory_note
 
     @property
     def eligible(self): return self.status == "eligible"
@@ -96,25 +96,25 @@ class RiskAssessor:
                 f"country names). Can only be applied for under a UN/ICANN arrangement.",
                 "UN M.49 Standard; ICANN §7.5.2")
 
-        geo_flag = False
-        geo_notes: list[str] = []
+        advisory_flag = False
+        advisory_notes: list[str] = []
         city_label = db.get_city(s)
         if city_label:
-            geo_flag = True
-            geo_notes.append(
+            advisory_flag = True
+            advisory_notes.append(
                 f"'{s}' matches city '{city_label}'. §7.5.3: Geographic Names Review will "
                 f"apply. Applicant must provide documented support from the relevant "
                 f"government(s) or demonstrate legitimate community sponsorship.")
         if db.is_un_region(s):   # catches sub-regions (macro already blocked above)
-            geo_flag = True
-            geo_notes.append(
+            advisory_flag = True
+            advisory_notes.append(
                 f"'{s}' is a UN M.49 sub-regional geographic name. §7.5 Geographic Names "
                 f"Review applies. Community support documentation required.")
-        if not geo_notes:
+        if not advisory_notes:
             for name in db.iso_names:
                 if len(name) > 3 and s in name.split():
-                    geo_flag = True
-                    geo_notes.append(
+                    advisory_flag = True
+                    advisory_notes.append(
                         f"'{s}' is a component of country name '{name}'. "
                         f"§7.5.1 also blocks separable components. Verify in TAMS.")
                     break
@@ -122,8 +122,8 @@ class RiskAssessor:
         # Sacred sites
         sacred = db.get_sacred_site(s)
         if sacred:
-            geo_flag = True
-            geo_notes.append(
+            advisory_flag = True
+            advisory_notes.append(
                 f"'{s}' is a globally recognised sacred/religiously significant site "
                 f"({sacred['religion']}, {sacred['location']}): {sacred['significance'][:120]}. "
                 f"§7.5.3 Geographic Names Review applies. Community objection risk from "
@@ -132,14 +132,24 @@ class RiskAssessor:
         # UNESCO World Heritage Sites
         whs = db.get_world_heritage(s)
         if whs:
-            geo_flag = True
-            geo_notes.append(
+            advisory_flag = True
+            advisory_notes.append(
                 f"'{s}' is a UNESCO World Heritage Site ({whs['whs_name']}, {whs['country']}, "
                 f"inscribed {whs['inscribed']}). §7.5.3 Geographic Names Review applies. "
                 f"Host government likely to file a GAC early warning and/or community objection.")
 
-        geo_note = "  ".join(geo_notes)
-        return EligibilityResult("eligible", geo_flag=geo_flag, geo_note=geo_note)
+        # Common brand strings (zone-file brand registrations)
+        if db.is_common_brand_string(s):
+            advisory_flag = True
+            advisory_notes.append(
+                f"'{s}' is commonly found in zone files and is registered by brands as a "
+                f"second-level label. One or more brand holders may hold trademark rights "
+                f"in this string and could file a §4.5.1.2 Community Objection or a "
+                f"§4.5.1.3 Legal Rights Objection. Commission a full trademark clearance "
+                f"search (WIPO Global Brand DB, TMCH, USPTO TESS, EUIPO) before filing.")
+
+        advisory_note = "  ".join(advisory_notes)
+        return EligibilityResult("eligible", advisory_flag=advisory_flag, advisory_note=advisory_note)
 
     def _validate_format(self, raw: str) -> "dict | None":
         """Return an error result dict if raw is not a syntactically valid TLD label, else None."""
@@ -222,8 +232,8 @@ class RiskAssessor:
             "gi_risks": [],
             "gac_warnings": None,
             "company_risks": [],
-            "geo_flag": False,
-            "geo_note": "",
+            "advisory_flag": False,
+            "advisory_note": "",
             "aural_dm": ("", ""),
             "aural_sdx": "",
         }
@@ -250,7 +260,7 @@ class RiskAssessor:
                     "factors": [], "sse_risks": [], "sco_risks": [], "plural_risks": [],
                     "lro_risks": [], "lpi_risks": [], "history_2012": None,
                     "gi_risks": [], "gac_warnings": None, "company_risks": [],
-                    "geo_flag": False, "geo_note": "", "aural_dm": ("", ""), "aural_sdx": ""}
+                    "advisory_flag": False, "advisory_note": "", "aural_dm": ("", ""), "aural_sdx": ""}
 
         # ── Visual similarity ─────────────────────────────────────────────────
         vis_sim   = self.db.fetcher.similarity.check(s, self.db)
@@ -548,6 +558,6 @@ class RiskAssessor:
                 "plural_risks": plural_hits, "lro_risks": lro_hits, "lpi_risks": lpi_hits,
                 "history_2012": h12,
                 "gi_risks": gi_risks, "gac_warnings": gac, "company_risks": company_hits,
-                "geo_flag": elig.geo_flag, "geo_note": elig.geo_note,
+                "advisory_flag": elig.advisory_flag, "advisory_note": elig.advisory_note,
                 "aural_dm": (aur_sim["dm_primary"], aur_sim["dm_secondary"]),
                 "aural_sdx": aur_sim["soundex"]}

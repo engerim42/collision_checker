@@ -16,7 +16,7 @@ def _build_verdict(r: dict, colour) -> list[str]:
     """Synthesise all risk signals into a final ordered verdict list."""
     sse_risks  = r.get("sse_risks", [])
     has_sco    = bool(r.get("sco_risks"))
-    has_geo    = bool(r.get("geo_flag"))
+    has_advisory = bool(r.get("advisory_flag"))
     has_plural = bool(r.get("plural_risks"))
     lro_risks  = r.get("lro_risks", [])
     lpi_risks  = r.get("lpi_risks", [])
@@ -80,8 +80,8 @@ def _build_verdict(r: dict, colour) -> list[str]:
                 "Obtain ICANN's pre-application longitudinal dataset (§7.7.1) when published."
             )
 
-    # 3 — geographic barrier
-    if has_geo:
+    # 3 — advisory flags
+    if has_advisory:
         items.append(
             "GEOGRAPHIC BARRIER (§7.5.3): this string identifies a city or geographic "
             "region. Approval requires documented government support or a demonstrated "
@@ -285,9 +285,9 @@ def print_report(r: dict):
         print()
 
     # Geographic flag
-    if r.get("geo_flag"):
-        print(YELLOW("  ⚠  GEOGRAPHIC NAME FLAG"))
-        for line in textwrap.wrap(r["geo_note"], W-4): print("  " + line)
+    if r.get("advisory_flag"):
+        print(YELLOW("  ⚠  APPLICATION ADVISORIES"))
+        for line in textwrap.wrap(r["advisory_note"], W-4): print("  " + line)
         print()
 
     # Summary
