@@ -14,10 +14,11 @@ W = 74
 
 def _build_verdict(r: dict, colour) -> list[str]:
     """Synthesise all risk signals into a final ordered verdict list."""
-    sse_risks  = r.get("sse_risks", [])
-    has_sco    = bool(r.get("sco_risks"))
-    has_advisory = bool(r.get("advisory_flag"))
-    has_plural = bool(r.get("plural_risks"))
+    sse_risks       = r.get("sse_risks", [])
+    has_sco         = bool(r.get("sco_risks"))
+    has_geo_advisory   = bool(r.get("geo_advisory_flag"))
+    has_brand_advisory = bool(r.get("brand_advisory_flag"))
+    has_plural      = bool(r.get("plural_risks"))
     lro_risks  = r.get("lro_risks", [])
     lpi_risks  = r.get("lpi_risks", [])
     h12        = r.get("history_2012")
@@ -80,13 +81,23 @@ def _build_verdict(r: dict, colour) -> list[str]:
                 "Obtain ICANN's pre-application longitudinal dataset (§7.7.1) when published."
             )
 
-    # 3 — advisory flags
-    if has_advisory:
+    # 3 — geographic advisory
+    if has_geo_advisory:
         items.append(
             "GEOGRAPHIC BARRIER (§7.5.3): this string identifies a city or geographic "
             "region. Approval requires documented government support or a demonstrated "
             "legitimate community sponsorship — typically the decisive barrier for "
             "city-name applications."
+        )
+
+    # 3b — brand/trademark advisory
+    if has_brand_advisory:
+        items.append(
+            "BRAND ADVISORY: this string is commonly registered as a second-level label "
+            "by brands in existing TLD zone files. One or more trademark holders may file "
+            "a §4.5.1.2 Community Objection or §4.5.1.3 Legal Rights Objection. "
+            "Commission a full trademark clearance search (WIPO Global Brand DB, TMCH, "
+            "USPTO TESS, EUIPO) before filing."
         )
 
     # 4 — SCO contention

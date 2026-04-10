@@ -1,5 +1,5 @@
 # gTLD Application Risk Checker
-> **Current Version: 1.0.1**
+> **Current Version: 1.0.2**
 
 Assesses proposed new gTLD strings against ICANN eligibility rules and name
 collision risk factors, based on the 2026 Applicant Guidebook and the NCAP
@@ -86,6 +86,7 @@ lib/
   semantic.py             Semantic/translation similarity (30+ languages)
   geo_data.py             Bundled UN macro/sub-region lists; loads world-cities.json
   world-cities.json       Bundled city dataset — all cities > 15 000 population (geonames.org)
+  common-strings.json     Bundled common brand strings found in WIPO db and global zone files
 tests/                    Unit tests (no network required)
 data/                     Local JSON reference files (auto-created on first run)
 .cache/                   Cached remote files (auto-managed, TTL-based)

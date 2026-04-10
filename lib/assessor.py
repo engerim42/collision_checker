@@ -15,16 +15,20 @@ if TYPE_CHECKING:
 
 
 class EligibilityResult:
-    __slots__ = ("status", "category", "reason", "source", "advisory_flag", "advisory_note")
+    __slots__ = ("status", "category", "reason", "source", "advisory_flag", "advisory_note",
+                 "geo_advisory_flag", "brand_advisory_flag")
 
     def __init__(self, status="eligible", category="", reason="",
-                 source="", advisory_flag=False, advisory_note=""):
+                 source="", advisory_flag=False, advisory_note="",
+                 geo_advisory_flag=False, brand_advisory_flag=False):
         self.status   = status
         self.category = category
         self.reason   = reason
         self.source   = source
         self.advisory_flag = advisory_flag
         self.advisory_note = advisory_note
+        self.geo_advisory_flag   = geo_advisory_flag
+        self.brand_advisory_flag = brand_advisory_flag
 
     @property
     def eligible(self): return self.status == "eligible"
@@ -97,23 +101,25 @@ class RiskAssessor:
                 "UN M.49 Standard; ICANN §7.5.2")
 
         advisory_flag = False
+        geo_advisory_flag = False
+        brand_advisory_flag = False
         advisory_notes: list[str] = []
         city_label = db.get_city(s)
         if city_label:
-            advisory_flag = True
+            advisory_flag = geo_advisory_flag = True
             advisory_notes.append(
                 f"'{s}' matches city '{city_label}'. §7.5.3: Geographic Names Review will "
                 f"apply. Applicant must provide documented support from the relevant "
                 f"government(s) or demonstrate legitimate community sponsorship.")
         if db.is_un_region(s):   # catches sub-regions (macro already blocked above)
-            advisory_flag = True
+            advisory_flag = geo_advisory_flag = True
             advisory_notes.append(
                 f"'{s}' is a UN M.49 sub-regional geographic name. §7.5 Geographic Names "
                 f"Review applies. Community support documentation required.")
         if not advisory_notes:
             for name in db.iso_names:
                 if len(name) > 3 and s in name.split():
-                    advisory_flag = True
+                    advisory_flag = geo_advisory_flag = True
                     advisory_notes.append(
                         f"'{s}' is a component of country name '{name}'. "
                         f"§7.5.1 also blocks separable components. Verify in TAMS.")
@@ -122,7 +128,7 @@ class RiskAssessor:
         # Sacred sites
         sacred = db.get_sacred_site(s)
         if sacred:
-            advisory_flag = True
+            advisory_flag = geo_advisory_flag = True
             advisory_notes.append(
                 f"'{s}' is a globally recognised sacred/religiously significant site "
                 f"({sacred['religion']}, {sacred['location']}): {sacred['significance'][:120]}. "
@@ -132,7 +138,7 @@ class RiskAssessor:
         # UNESCO World Heritage Sites
         whs = db.get_world_heritage(s)
         if whs:
-            advisory_flag = True
+            advisory_flag = geo_advisory_flag = True
             advisory_notes.append(
                 f"'{s}' is a UNESCO World Heritage Site ({whs['whs_name']}, {whs['country']}, "
                 f"inscribed {whs['inscribed']}). §7.5.3 Geographic Names Review applies. "
@@ -140,7 +146,7 @@ class RiskAssessor:
 
         # Common brand strings (zone-file brand registrations)
         if db.is_common_brand_string(s):
-            advisory_flag = True
+            advisory_flag = brand_advisory_flag = True
             advisory_notes.append(
                 f"'{s}' is commonly found in zone files and is registered by brands as a "
                 f"second-level label. One or more brand holders may hold trademark rights "
@@ -149,7 +155,8 @@ class RiskAssessor:
                 f"search (WIPO Global Brand DB, TMCH, USPTO TESS, EUIPO) before filing.")
 
         advisory_note = "  ".join(advisory_notes)
-        return EligibilityResult("eligible", advisory_flag=advisory_flag, advisory_note=advisory_note)
+        return EligibilityResult("eligible", advisory_flag=advisory_flag, advisory_note=advisory_note,
+                                 geo_advisory_flag=geo_advisory_flag, brand_advisory_flag=brand_advisory_flag)
 
     def _validate_format(self, raw: str) -> "dict | None":
         """Return an error result dict if raw is not a syntactically valid TLD label, else None."""
@@ -234,6 +241,8 @@ class RiskAssessor:
             "company_risks": [],
             "advisory_flag": False,
             "advisory_note": "",
+            "geo_advisory_flag": False,
+            "brand_advisory_flag": False,
             "aural_dm": ("", ""),
             "aural_sdx": "",
         }
@@ -260,7 +269,9 @@ class RiskAssessor:
                     "factors": [], "sse_risks": [], "sco_risks": [], "plural_risks": [],
                     "lro_risks": [], "lpi_risks": [], "history_2012": None,
                     "gi_risks": [], "gac_warnings": None, "company_risks": [],
-                    "advisory_flag": False, "advisory_note": "", "aural_dm": ("", ""), "aural_sdx": ""}
+                    "advisory_flag": False, "advisory_note": "",
+                    "geo_advisory_flag": False, "brand_advisory_flag": False,
+                    "aural_dm": ("", ""), "aural_sdx": ""}
 
         # ── Visual similarity ─────────────────────────────────────────────────
         vis_sim   = self.db.fetcher.similarity.check(s, self.db)
@@ -559,5 +570,7 @@ class RiskAssessor:
                 "history_2012": h12,
                 "gi_risks": gi_risks, "gac_warnings": gac, "company_risks": company_hits,
                 "advisory_flag": elig.advisory_flag, "advisory_note": elig.advisory_note,
+                "geo_advisory_flag": elig.geo_advisory_flag,
+                "brand_advisory_flag": elig.brand_advisory_flag,
                 "aural_dm": (aur_sim["dm_primary"], aur_sim["dm_secondary"]),
                 "aural_sdx": aur_sim["soundex"]}
